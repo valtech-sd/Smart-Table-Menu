@@ -1,34 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useCallback, useEffect, useRef } from "react";
+import "./App.css";
+
+import Webcam from "react-webcam";
+
+import { isWebcamReady } from "./utils/webcam";
+import { FLIPPED_VIDEO } from "./utils/config";
+
+const videoConstraints = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+  facingMode: "user",
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const webcamRef = useRef<Webcam>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const detect = useCallback(async () => {
+    if (isWebcamReady(webcamRef.current)) {
+      const { video } = webcamRef.current;
+
+      if (video) {
+        // DETECT HERE
+        console.log("LOADED!");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    detect();
+  }, [detect]);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Webcam
+        ref={webcamRef}
+        muted
+        mirrored={FLIPPED_VIDEO}
+        imageSmoothing
+        videoConstraints={videoConstraints}
+      />
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          zIndex: 2,
+        }}
+      />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

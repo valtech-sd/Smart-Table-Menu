@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Progress from "react-circle-progress-bar";
 
 import Webcam from "react-webcam";
@@ -19,7 +19,9 @@ function App() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const progress = useAnimatedValue({ value: 3000, step: 100 });
+  const [active, setActive] = useState(false);
+
+  const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
   const detect = useCallback(async () => {
     if (isWebcamReady(webcamRef.current)) {
@@ -38,16 +40,25 @@ function App() {
 
   return (
     <div className="App">
-      <Progress
-        className="progress-bar"
-        gradient={[{ stop: 1, color: "#00bc9b" }]}
-        background="#fff"
-        progress={progress}
-        strokeWidth={15}
-        reduction={0}
-        hideBall
-        hideValue
-      />
+      <button
+        className="progress-button"
+        onClick={() => setActive(true)}
+        onMouseLeave={() => setActive(false)}
+      >
+        PRESS HERE
+      </button>
+      {active && (
+        <Progress
+          className="progress-bar"
+          gradient={[{ stop: 1, color: "#00bc9b" }]}
+          background="#fff"
+          progress={progress}
+          strokeWidth={15}
+          reduction={0}
+          hideBall
+          hideValue
+        />
+      )}
       <Webcam
         ref={webcamRef}
         muted

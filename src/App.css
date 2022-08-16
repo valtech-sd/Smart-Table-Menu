@@ -34,3 +34,10 @@ canvas {
   width: 150px;
   height: 150px;
 }
+
+.progress-button {
+  position: absolute;
+  z-index: 5;
+  bottom: 100px;
+  right: 250px;
+}

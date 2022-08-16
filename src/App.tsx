@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Progress from "react-circle-progress-bar";
 
 import Webcam from "react-webcam";
@@ -20,14 +20,24 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [active, setActive] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
+  const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
+
   useEffect(() => {
     if (progress === 100) {
+      setShowToast(true);
       setTimeout(() => setActive(false), 500);
     }
   }, [progress]);
+
+  useEffect(() => {
+    if (showToast) {
+      setTimeout(() => setShowToast(false), 2000);
+    }
+  }, [showToast]);
 
   const detect = useCallback(async () => {
     if (isWebcamReady(webcamRef.current)) {
@@ -53,6 +63,7 @@ function App() {
       >
         TRIGGER PROGRESS
       </button>
+      <div className={`toast ${toastClass}`}>Item was added to cart</div>
       {active && (
         <Progress
           className="progress-bar"

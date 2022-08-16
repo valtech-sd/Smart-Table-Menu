@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef } from "react";
-import "./App.css";
+import Progress from "react-circle-progress-bar";
 
 import Webcam from "react-webcam";
 
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
+import useAnimatedValue from "./hooks/useAnimatedValue";
+
+import "./App.css";
 
 const videoConstraints = {
   width: window.innerWidth,
@@ -15,6 +18,8 @@ const videoConstraints = {
 function App() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const progress = useAnimatedValue({ value: 3000, step: 100 });
 
   const detect = useCallback(async () => {
     if (isWebcamReady(webcamRef.current)) {
@@ -33,6 +38,16 @@ function App() {
 
   return (
     <div className="App">
+      <Progress
+        className="progress-bar"
+        gradient={[{ stop: 1, color: "#00bc9b" }]}
+        background="#fff"
+        progress={progress}
+        strokeWidth={15}
+        reduction={0}
+        hideBall
+        hideValue
+      />
       <Webcam
         ref={webcamRef}
         muted

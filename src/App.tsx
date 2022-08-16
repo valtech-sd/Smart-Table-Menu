@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import Progress from "react-circle-progress-bar";
+import "./App.css";
 
+import Progress from "react-circle-progress-bar";
 import Webcam from "react-webcam";
 
+import { loadHandposeModel } from "./utils/handpose";
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
@@ -20,8 +22,19 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [active, setActive] = useState(false);
+  const [handposeModel, setHandposeModel] = useState<any>();
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
+
+  const detect = useCallback(async () => {
+    if (isWebcamReady(webcamRef.current)) {
+      const { video } = webcamRef.current;
+
+      if (video) {
+        console.log("LOADED MODEL!", handposeModel);
+      }
+    }
+  }, [handposeModel]);
 
   useEffect(() => {
     if (progress === 100) {
@@ -29,20 +42,15 @@ function App() {
     }
   }, [progress]);
 
-  const detect = useCallback(async () => {
-    if (isWebcamReady(webcamRef.current)) {
-      const { video } = webcamRef.current;
-
-      if (video) {
-        // DETECT HERE
-        console.log("LOADED!");
-      }
-    }
+  useEffect(() => {
+    loadHandposeModel().then(setHandposeModel);
   }, []);
 
   useEffect(() => {
-    detect();
-  }, [detect]);
+    if (canvasRef.current && handposeModel) {
+      detect();
+    }
+  }, [canvasRef.current, handposeModel]);
 
   return (
     <div className="App">

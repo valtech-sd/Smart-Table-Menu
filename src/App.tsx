@@ -23,6 +23,12 @@ function App() {
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
+  useEffect(() => {
+    if (progress === 100) {
+      setTimeout(() => setActive(false), 500);
+    }
+  }, [progress]);
+
   const detect = useCallback(async () => {
     if (isWebcamReady(webcamRef.current)) {
       const { video } = webcamRef.current;
@@ -42,10 +48,10 @@ function App() {
     <div className="App">
       <button
         className="progress-button"
-        onClick={() => setActive(true)}
+        onMouseEnter={() => setActive(true)}
         onMouseLeave={() => setActive(false)}
       >
-        PRESS HERE
+        TRIGGER PROGRESS
       </button>
       {active && (
         <Progress

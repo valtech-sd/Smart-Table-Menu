@@ -99,13 +99,6 @@ function App() {
 
   return (
     <div className="App">
-      <button
-        className="progress-button"
-        onMouseEnter={() => setActive(true)}
-        onMouseLeave={() => setActive(false)}
-      >
-        TRIGGER PROGRESS
-      </button>
       <div className={`toast ${toastClass}`}>Item was added to cart</div>
       {active && (
         <Progress

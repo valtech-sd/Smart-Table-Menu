@@ -38,13 +38,6 @@ canvas {
   z-index: 3;
 }
 
-.progress-button {
-  position: absolute;
-  z-index: 5;
-  bottom: 100px;
-  right: 250px;
-}
-
 .toast {
   position: absolute;
   top: 50px;

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
 
 // Source based on https://codepen.io/cobra_winfrey/pen/mdJeqZb
-@mixin magic-border($width, $color, $duration, $direction){
+@mixin magic-border($width, $color, $duration, $direction) {
   position: relative;
 
   &:before {
@@ -118,7 +118,7 @@ canvas {
     font-size: 20px;
     color: #242424;
     padding: 0 30px;
-  
+
     @include magic-border(3px, #00bc9b, 1.5s, 1);
   }
 
@@ -126,4 +126,23 @@ canvas {
     font-size: 30px;
     margin-bottom: 15px;
   }
+}
+
+.show-menu {
+  position: absolute;
+  z-index: 5;
+  top: 100px;
+  left: 250px;
+
+
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 200px;
+  font-size: 20px;
+  color: #ffffff;
+  padding: 0 30px;
+
+  @include magic-border(3px, #00bc9b, 3s, 1);
+
 }

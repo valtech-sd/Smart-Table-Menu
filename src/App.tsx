@@ -28,6 +28,8 @@ function App() {
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [showMenuActive, setShowMenuActive] = useState(false);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
@@ -98,10 +100,37 @@ function App() {
     }
   }, [canvasRef.current, handposeModel]);
 
+  useEffect(() => {
+    const element = document.getElementById("showMenu");
+    const coordinates = element?.getBoundingClientRect();
+    if (
+      indexCoordinates &&
+      coordinates &&
+      coordinates.left <= indexCoordinates.x &&
+      coordinates.right >= indexCoordinates.x &&
+      coordinates.top <= indexCoordinates.y &&
+      coordinates.bottom >= indexCoordinates.y
+    ) {
+      setShowMenuActive((prevShowMenuActive) => !prevShowMenuActive);
+
+      if (showMenu) {
+        setShowMenu((prevShowMenu) => !prevShowMenu);
+      }
+
+      setTimeout(() => setShowMenu((prevShowMenu) => !prevShowMenu), 9000);
+    }
+  }, [indexCoordinates, showMenuActive]);
+
   return (
     <div className="App">
       <div className={`toast toast--${toastClass}`}>Item added to cart</div>
-      <Menu indexCoordinates={indexCoordinates} />
+      <button
+        id="showMenu"
+        className={`show-menu ${showMenuActive ? "selected" : ""}`}
+      >
+        TOGGLE MENU
+      </button>
+      {showMenu && <Menu indexCoordinates={indexCoordinates} />}
       <Webcam
         ref={webcamRef}
         muted

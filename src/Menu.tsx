@@ -1,92 +1,78 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { IndexCoords, MenuItemCoords } from "./types";
 
 const MENU_IDS = [
-  "americano",
-  "espresso",
-  "capuccino",
-  "latte",
-  "tea",
-  "croissant",
-  "bagel",
-  "doughnut",
-  "brownie",
-  "cookie",
+  {
+    name: "Hot",
+    items: ["americano", "espresso", "capuccino", "latte", "tea"],
+  },
+  {
+    name: "Desserts",
+    items: ["croissant", "bagel", "doughnut", "brownie", "cookie"],
+  },
 ];
 
-interface Coords {
-  [x: string]: DOMRect | undefined;
+interface MenuProps {
+  indexCoordinates?: IndexCoords;
 }
 
-export const Menu = () => {
-  const [coordinates, setCoordinates] = useState<Coords[]>([]);
+export const Menu = ({ indexCoordinates }: MenuProps) => {
+  const [selectedItem, setSelectedItem] = useState<string>();
+  const itemsCoordinates = useRef<MenuItemCoords>({});
 
   useEffect(() => {
-    const menuCoords = MENU_IDS.map((item) => {
-      const element = document.getElementById(item);
+    if (indexCoordinates) {
+      const entry = Object.entries(itemsCoordinates.current).find((entry) => {
+        const [, coordinates] = entry;
+
+        return (
+          coordinates.left <= indexCoordinates.x &&
+          coordinates.right >= indexCoordinates.x &&
+          coordinates.top <= indexCoordinates.y &&
+          coordinates.bottom >= indexCoordinates.y
+        );
+      });
+
+      if (entry) {
+        setSelectedItem(entry[0]);
+      }
+    }
+  }, [indexCoordinates]);
+
+  useEffect(() => {
+    const items = MENU_IDS.flatMap((section) => section.items);
+
+    items.forEach((item) => {
+      const [element] = document.getElementsByClassName(item);
       const rect = element?.getBoundingClientRect();
-      return { [item]: rect };
+
+      if (rect) {
+        itemsCoordinates.current[item] = rect;
+      }
     });
-    setCoordinates(menuCoords);
   }, []);
 
   return (
     <div className="menu container">
-      <div>
-        <>
-          <div className="table title">Hot</div>
+      {MENU_IDS.map((section) => (
+        <div key={section.name} className="menu__section">
+          <div className="table title">{section.name}</div>
           <div className="divider" />
-        </>
-        <div>
-          <div className="table" id="americano">
-            <p>Americano</p>
-            <p>$4.00</p>
-          </div>
-          <div className="table" id="espresso">
-            <p>Espresso</p>
-            <p>$4.00</p>
-          </div>
-          <div className="table" id="capuccino">
-            <p>Capuccino</p>
-            <p>$5.00</p>
-          </div>
-          <div className="table" id="latte">
-            <p>Latte</p>
-            <p>$5.00</p>
-          </div>
-          <div className="table" id="tea">
-            <p>Tea</p>
-            <p>$4.00</p>
+          <div>
+            {section.items.map((item) => (
+              <div
+                key={item}
+                className={`table ${item} ${
+                  item === selectedItem ? "selected" : ""
+                } `}
+              >
+                <p>{item}</p>
+                <p>$4.00</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
-      <div style={{ marginTop: 30 }}>
-        <>
-          <div className="table title">Desserts</div>
-          <div className="divider" />
-        </>
-        <div>
-          <div className="table" id="croissant">
-            <p>Croissant</p>
-            <p>$4.00</p>
-          </div>
-          <div className="table" id="bagel">
-            <p>Bagel</p>
-            <p>$4.00</p>
-          </div>
-          <div className="table" id="doughnut">
-            <p>Doughnut</p>
-            <p>$5.00</p>
-          </div>
-          <div className="table" id="brownie">
-            <p>Brownie</p>
-            <p>$5.00</p>
-          </div>
-          <div className="table" id="cookie">
-            <p>Cookie</p>
-            <p>$4.00</p>
-          </div>
-        </div>
-      </div>
+      ))}
     </div>
   );
 };

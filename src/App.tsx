@@ -3,11 +3,12 @@ import Progress from "react-circle-progress-bar";
 import Webcam from "react-webcam";
 import { HandPose } from "@tensorflow-models/handpose";
 
-import { render } from "./utils/canvas";
 import { loadHandposeModel } from "./utils/handpose";
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
+
+import { IndexCoords } from "./types";
 
 import "./App.css";
 
@@ -22,6 +23,7 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
+  const [, setIndexCoordinates] = useState<IndexCoords>();
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -55,14 +57,30 @@ function App() {
 
       if (video && handposeModel) {
         const predictions = await handposeModel.estimateHands(video);
-        const canvasContext = canvasRef.current;
 
-        if (canvasContext) {
-          canvasContext.width = video?.videoWidth;
-          canvasContext.height = video?.videoHeight;
+        if (predictions.length && canvasRef.current) {
+          canvasRef.current.width = video.videoWidth;
+          canvasRef.current.height = video.videoHeight;
 
-          render(canvasContext?.getContext("2d"), predictions);
+          const indexFinger = predictions[0].annotations.indexFinger;
+          const lastFingerDot = indexFinger.pop();
+
+          if (lastFingerDot) {
+            const [x, y] = lastFingerDot;
+
+            const canvasContext = canvasRef.current.getContext("2d");
+
+            if (canvasContext) {
+              canvasContext.beginPath();
+              canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
+              canvasContext.stroke();
+            }
+
+            return setIndexCoordinates({ x, y });
+          }
         }
+
+        setIndexCoordinates(undefined);
       }
     }
   }, [webcamRef.current, canvasRef.current, handposeModel]);

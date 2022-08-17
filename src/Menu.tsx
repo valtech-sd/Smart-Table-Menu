@@ -53,16 +53,16 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
   }, []);
 
   return (
-    <div className="menu container">
+    <div className="menu">
       {MENU_IDS.map((section) => (
         <div key={section.name} className="menu__section">
-          <div className="table title">{section.name}</div>
+          <div className="menu__item menu__title">{section.name}</div>
           <div className="divider" />
           <div>
             {section.items.map((item) => (
               <div
                 key={item}
-                className={`table ${item} ${
+                className={`menu__item ${item} ${
                   item === selectedItem ? "selected" : ""
                 } `}
               >

@@ -100,7 +100,7 @@ function App() {
 
   return (
     <div className="App">
-      <div className={`toast ${toastClass}`}>Item was added to cart</div>
+      <div className={`toast toast--${toastClass}`}>Item added to cart</div>
       <Menu indexCoordinates={indexCoordinates} />
       <Webcam
         ref={webcamRef}

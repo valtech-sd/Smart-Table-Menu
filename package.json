@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tensorflow-models/handpose": "^0.0.7",
+    "@tensorflow/tfjs": "^2.4.0",
     "@tensorflow/tfjs-backend-webgl": "^3.19.0",
     "@tensorflow/tfjs-converter": "^3.19.0",
     "@tensorflow/tfjs-core": "^3.19.0",

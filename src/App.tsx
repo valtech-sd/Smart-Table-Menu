@@ -2,18 +2,25 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Progress from "react-circle-progress-bar";
 import Webcam from "react-webcam";
 
+import { render } from "./utils/canvas";
 import { loadHandposeModel } from "./utils/handpose";
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
 
+import victory from "./images/victory.png";
+import thumbs_up from "./images/thumbs_up.png";
+
 import "./App.css";
+import { gestureDetect } from "./utils/fingerpose";
 
 const videoConstraints = {
   width: window.innerWidth,
   height: window.innerHeight,
   facingMode: "user",
 };
+
+const images = { thumbs_up, victory };
 
 function App() {
   const webcamRef = useRef<Webcam>(null);
@@ -23,6 +30,7 @@ function App() {
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  const [emoji, setEmoji] = useState(null);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
@@ -41,21 +49,32 @@ function App() {
     }
   }, [showToast]);
 
-  const detect = useCallback(async () => {
-    if (isWebcamReady(webcamRef.current)) {
-      const { video } = webcamRef.current;
-
-      if (video) {
-        console.log("LOADED MODEL!", handposeModel);
-      }
-    }
-  }, [handposeModel]);
-
   useEffect(() => {
     if (progress === 100) {
       setTimeout(() => setActive(false), 500);
     }
   }, [progress]);
+
+  const detect = useCallback(async () => {
+    if (isWebcamReady(webcamRef.current)) {
+      const { video } = webcamRef.current;
+
+      if (video) {
+        const predictions = await handposeModel.estimateHands(video);
+        const canvasContext = canvasRef.current;
+
+        if (canvasContext) {
+          canvasContext.width = video?.videoWidth;
+          canvasContext.height = video?.videoHeight;
+
+          render(canvasContext?.getContext("2d"), predictions);
+          
+          const emoji = await gestureDetect(predictions);
+          setEmoji(emoji);
+        }
+      }
+    }
+  }, [webcamRef.current, canvasRef.current]);
 
   useEffect(() => {
     loadHandposeModel().then(setHandposeModel);
@@ -63,7 +82,9 @@ function App() {
 
   useEffect(() => {
     if (canvasRef.current && handposeModel) {
-      detect();
+      setInterval(() => {
+        detect();
+      }, 10);
     }
   }, [canvasRef.current, handposeModel]);
 
@@ -95,6 +116,14 @@ function App() {
         mirrored={FLIPPED_VIDEO}
         imageSmoothing
         videoConstraints={videoConstraints}
+        style={{
+          position: "absolute",
+          marginLeft: "auto",
+          marginRight: "auto",
+          left: 0,
+          right: 0,
+          textAlign: "center",
+        }}
       />
       <canvas
         ref={canvasRef}
@@ -103,6 +132,21 @@ function App() {
           zIndex: 2,
         }}
       />
+      {emoji !== null && (
+        <img
+          src={images[emoji]}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 400,
+            bottom: 500,
+            right: 0,
+            textAlign: "center",
+            height: 100,
+          }}
+        />
+      )}
     </div>
   );
 }

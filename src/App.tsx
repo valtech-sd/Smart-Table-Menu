@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import Progress from "react-circle-progress-bar";
 import Webcam from "react-webcam";
 import { HandPose } from "@tensorflow-models/handpose";
 
@@ -102,18 +101,6 @@ function App() {
   return (
     <div className="App">
       <div className={`toast ${toastClass}`}>Item was added to cart</div>
-      {active && (
-        <Progress
-          className="progress-bar"
-          gradient={[{ stop: 1, color: "#00bc9b" }]}
-          background="#fff"
-          progress={progress}
-          strokeWidth={15}
-          reduction={0}
-          hideBall
-          hideValue
-        />
-      )}
       <Menu indexCoordinates={indexCoordinates} />
       <Webcam
         ref={webcamRef}

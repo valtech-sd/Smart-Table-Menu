@@ -26,10 +26,10 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
         const [, coordinates] = entry;
 
         return (
-          coordinates.left <= indexCoordinates.x &&
-          coordinates.right >= indexCoordinates.x &&
-          coordinates.top <= indexCoordinates.y &&
-          coordinates.bottom >= indexCoordinates.y
+          coordinates.left < indexCoordinates.x &&
+          coordinates.right > indexCoordinates.x &&
+          coordinates.top < indexCoordinates.y &&
+          coordinates.bottom > indexCoordinates.y
         );
       });
 

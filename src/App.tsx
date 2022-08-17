@@ -10,7 +10,9 @@ import useAnimatedValue from "./hooks/useAnimatedValue";
 
 import { IndexCoords } from "./types";
 
-import "./App.css";
+import { Menu } from "./Menu";
+
+import "./App.scss";
 
 const videoConstraints = {
   width: window.innerWidth,
@@ -23,7 +25,7 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
-  const [, setIndexCoordinates] = useState<IndexCoords>();
+  const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -112,6 +114,7 @@ function App() {
           hideValue
         />
       )}
+      <Menu indexCoordinates={indexCoordinates} />
       <Webcam
         ref={webcamRef}
         muted

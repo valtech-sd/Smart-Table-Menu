@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Progress from "react-circle-progress-bar";
 import Webcam from "react-webcam";
+import { HandPose } from "@tensorflow-models/handpose";
 
 import { render } from "./utils/canvas";
 import { loadHandposeModel } from "./utils/handpose";
@@ -8,11 +9,7 @@ import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
 
-import victory from "./images/victory.png";
-import thumbs_up from "./images/thumbs_up.png";
-
 import "./App.css";
-import { gestureDetect } from "./utils/fingerpose";
 
 const videoConstraints = {
   width: window.innerWidth,
@@ -20,17 +17,14 @@ const videoConstraints = {
   facingMode: "user",
 };
 
-const images = { thumbs_up, victory };
-
 function App() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const [handposeModel, setHandposeModel] = useState<any>();
+  const [handposeModel, setHandposeModel] = useState<HandPose>();
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [emoji, setEmoji] = useState(null);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
@@ -59,7 +53,7 @@ function App() {
     if (isWebcamReady(webcamRef.current)) {
       const { video } = webcamRef.current;
 
-      if (video) {
+      if (video && handposeModel) {
         const predictions = await handposeModel.estimateHands(video);
         const canvasContext = canvasRef.current;
 
@@ -68,13 +62,10 @@ function App() {
           canvasContext.height = video?.videoHeight;
 
           render(canvasContext?.getContext("2d"), predictions);
-
-          const emoji = await gestureDetect(predictions);
-          setEmoji(emoji);
         }
       }
     }
-  }, [webcamRef.current, canvasRef.current]);
+  }, [webcamRef.current, canvasRef.current, handposeModel]);
 
   useEffect(() => {
     loadHandposeModel().then(setHandposeModel);
@@ -132,21 +123,6 @@ function App() {
           zIndex: 2,
         }}
       />
-      {emoji !== null && (
-        <img
-          src={images[emoji]}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 400,
-            bottom: 500,
-            right: 0,
-            textAlign: "center",
-            height: 100,
-          }}
-        />
-      )}
     </div>
   );
 }

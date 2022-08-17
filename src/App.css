@@ -35,6 +35,7 @@ canvas {
   bottom: 50px;
   width: 150px;
   height: 150px;
+  z-index: 3;
 }
 
 .progress-button {

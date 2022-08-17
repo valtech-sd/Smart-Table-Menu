@@ -1,8 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap");
+
 body {
   height: 100vh;
   width: 100vw;
   margin: 0;
-  font-family: "Chakra Petch", sans-serif;
+  font-family: "Josefin Sans", sans-serif;
   overflow: hidden;
   box-sizing: border-box;
   background-color: black;
@@ -64,4 +66,37 @@ canvas {
 
 .toast.show {
   opacity: 1;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.table {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  width: 200px;
+  font-size: 20px;
+  color: #242424;
+}
+
+.table.title {
+  font-size: 30px;
+  color: #242424;
+  margin-bottom: 4px;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: #242424;
+}
+
+.menu.container {
+  background-color: #ffffffde;
+  padding: 30px;
+  border-radius: 10px;
 }

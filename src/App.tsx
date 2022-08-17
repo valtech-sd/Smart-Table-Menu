@@ -68,7 +68,7 @@ function App() {
           canvasContext.height = video?.videoHeight;
 
           render(canvasContext?.getContext("2d"), predictions);
-          
+
           const emoji = await gestureDetect(predictions);
           setEmoji(emoji);
         }

@@ -148,20 +148,15 @@ canvas {
   padding: 10px 30px;
   background-color: #242424;
 
-  &.open {
+  &__open {
     position: absolute;
-    top: 10px;
+    top: 30px;
     left: 250px;
   }
 
-  &.close {
+  &__close {
     position: absolute;
-    top: 10px;
+    top: 30px;
     left: 460px;
   }
-
-  &.hovered {
-    background-color: #00bc9b;
-  }
-
 }

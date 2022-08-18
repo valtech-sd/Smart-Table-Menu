@@ -112,12 +112,11 @@ canvas {
   border-radius: 10px;
   z-index: 3;
   position: absolute;
-  left: 900px;
+  right: 100px;
   top: 100px;
 
-  &__title {
-    font-size: 30px;
-    margin-bottom: 15px;
+  &__section {
+    padding: 0;
   }
 
   &__item {
@@ -128,6 +127,11 @@ canvas {
     font-size: 20px;
     color: #242424;
     padding: 10px 30px;
+  }
+
+  &__title {
+    font-size: 30px;
+    margin-bottom: 15px;
   }
 
   &__btn__container {

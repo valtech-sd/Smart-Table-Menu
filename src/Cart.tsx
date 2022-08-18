@@ -1,7 +1,7 @@
 import { useCart } from "react-use-cart";
 
 export const Cart = () => {
-  const { isEmpty, totalItems, items } = useCart();
+  const { isEmpty, totalUniqueItems, updateItemQuantity, items } = useCart();
 
   if (isEmpty)
     return (
@@ -12,11 +12,28 @@ export const Cart = () => {
 
   return (
     <div className="cart">
-      <div className="cart__item cart__title">Cart ({totalItems})</div>
-      <ul>
+      <div className="cart__item cart__title">Cart ({totalUniqueItems})</div>
+      <div className="divider" />
+      <ul className="cart__section">
         {items.map((item) => (
           <li key={item.id} className="cart__item">
-            {item.quantity} x {item.name}
+            {" "}
+            <span>{item.name}</span>
+            <div className="cart__btn__container">
+              <button
+                className="cart__control__btn"
+                onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
+              >
+                -
+              </button>
+              <span className="cart__counter__output">{item.quantity}</span>
+              <button
+                className="cart__control__btn"
+                onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
+              >
+                +
+              </button>
+            </div>
           </li>
         ))}
       </ul>

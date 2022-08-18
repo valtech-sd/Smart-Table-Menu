@@ -115,10 +115,39 @@ canvas {
     display: flex;
     align-items: start;
     justify-content: space-between;
-    width: 200px;
+    width: 300px;
     font-size: 20px;
     color: #242424;
-    padding: 0 30px;
+    padding: 10px 30px;
+  }
+
+  &__btn__container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: row;
+    column-gap: 20px;
+  }
+  
+  &__control__btn {
+      font-size: 20px;
+      padding: 5px 20px;
+      background-color: transparent;
+      color: rgb(16, 0, 54);
+      border: 1px solid rgb(16, 0, 54);
+      cursor: pointer;
+      transition: 0.2s ease-in-out;
+  }
+  
+  &__counter__output {
+    font-size: 16px;
+    color: rgb(116, 7, 7);
+  }
+
+  &__control__btn:hover {
+      background-color: rgb(16, 0, 54);
+      color: rgb(255, 255, 255);
+      border: 1px solid rgb(16, 0, 54);
   }
 }
 

@@ -96,8 +96,8 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
   useEffect(() => {
     if (selectedItem) {
       const items = MENU_IDS.flatMap((section) => section.items);
-      const selected = items.find(item => item.name === selectedItem);
-      
+      const selected = items.find((item) => item.name === selectedItem);
+
       addItem(selected);
     }
   }, [selectedItem]);

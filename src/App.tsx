@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CartProvider } from "react-use-cart";
 import Webcam from "react-webcam";
 import { HandPose } from "@tensorflow-models/handpose";
 
-import { loadHandposeModel } from "./utils/handpose";
+import { isIndexOnTopOfElement, loadHandposeModel } from "./utils/handpose";
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
@@ -24,6 +23,7 @@ const videoConstraints = {
 function App() {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const requestRef = useRef<number>();
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -31,8 +31,6 @@ function App() {
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [hoverOpen, setHoverOpen] = useState(false);
-  const [hoverClose, setHoverClose] = useState(false);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
@@ -44,6 +42,22 @@ function App() {
       setTimeout(() => setActive(false), 500);
     }
   }, [progress]);
+
+  useEffect(() => {
+    const [element] = document.getElementsByClassName("menu-button__open");
+
+    if (isIndexOnTopOfElement(indexCoordinates, element)) {
+      setShowMenu(true);
+    }
+  }, [indexCoordinates]);
+
+  useEffect(() => {
+    const [element] = document.getElementsByClassName("menu-button__close");
+
+    if (isIndexOnTopOfElement(indexCoordinates, element)) {
+      setShowMenu(false);
+    }
+  }, [indexCoordinates]);
 
   useEffect(() => {
     if (showToast) {
@@ -62,14 +76,17 @@ function App() {
       const { video } = webcamRef.current;
 
       if (video && handposeModel) {
-        const predictions = await handposeModel.estimateHands(video);
+        const predictions = await handposeModel.estimateHands(
+          video,
+          FLIPPED_VIDEO
+        );
 
         if (predictions.length && canvasRef.current) {
           canvasRef.current.width = video.videoWidth;
           canvasRef.current.height = video.videoHeight;
 
           const indexFinger = predictions[0].annotations.indexFinger;
-          const lastFingerDot = indexFinger.pop();
+          const lastFingerDot = indexFinger.at(-1);
 
           if (lastFingerDot) {
             const [x, y] = lastFingerDot;
@@ -91,100 +108,47 @@ function App() {
     }
   }, [webcamRef.current, canvasRef.current, handposeModel]);
 
+  const app = useCallback(() => {
+    detect();
+
+    requestRef.current = requestAnimationFrame(app);
+
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, [detect]);
+
   useEffect(() => {
     loadHandposeModel().then(setHandposeModel);
-  }, []);
 
-  useEffect(() => {
-    if (canvasRef.current && handposeModel) {
-      setInterval(() => {
-        detect();
-      }, 10);
+    if (canvasRef.current) {
+      requestRef.current = requestAnimationFrame(app);
     }
-  }, [canvasRef.current, handposeModel]);
 
-  useEffect(() => {
-    const element = document.getElementById("openMenu");
-    const coordinates = element?.getBoundingClientRect();
-
-    if (indexCoordinates && coordinates) {
-      const hoverCondition =
-        coordinates.left <= indexCoordinates.x &&
-        coordinates.right >= indexCoordinates.x &&
-        coordinates.top <= indexCoordinates.y &&
-        coordinates.bottom >= indexCoordinates.y;
-
-      if (hoverCondition) {
-        setHoverOpen(true);
-        setShowMenu(true);
-      } else {
-        setHoverOpen(false);
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
       }
-    }
-  }, [indexCoordinates]);
-
-  useEffect(() => {
-    const element = document.getElementById("closeMenu");
-    const coordinates = element?.getBoundingClientRect();
-
-    if (indexCoordinates && coordinates) {
-      const hoverCondition =
-        coordinates.left <= indexCoordinates.x &&
-        coordinates.right >= indexCoordinates.x &&
-        coordinates.top <= indexCoordinates.y &&
-        coordinates.bottom >= indexCoordinates.y;
-
-      if (hoverCondition) {
-        setHoverClose(true);
-        setShowMenu(false);
-      } else {
-        setHoverClose(false);
-      }
-    }
-  }, [indexCoordinates]);
+    };
+  }, [canvasRef.current]);
 
   return (
     <div className="App">
-      <CartProvider>
-        <div className={`toast toast--${toastClass}`}>Item added to cart</div>
-
-        {showMenu && <Menu indexCoordinates={indexCoordinates} />}
-        <Webcam
-          ref={webcamRef}
-          muted
-          mirrored={FLIPPED_VIDEO}
-          imageSmoothing
-          videoConstraints={videoConstraints}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-          }}
-        />
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            zIndex: 2,
-          }}
-        />
-        <button
-          id="openMenu"
-          className={`menu-button open ${hoverOpen ? "hovered" : ""}`}
-        >
-          OPEN MENU
-        </button>
-        <button
-          id="closeMenu"
-          className={`menu-button close ${hoverClose ? "hovered" : ""}`}
-        >
-          CLOSE MENU
-        </button>
-        <Cart />
-      </CartProvider>
+      <div className={`toast toast--${toastClass}`}>Item added to cart</div>
+      {showMenu && <Menu indexCoordinates={indexCoordinates} />}
+      <Webcam
+        ref={webcamRef}
+        muted
+        mirrored={FLIPPED_VIDEO}
+        imageSmoothing
+        videoConstraints={videoConstraints}
+      />
+      <canvas ref={canvasRef} />
+      <button className="menu-button menu-button__open">OPEN MENU</button>
+      <button className="menu-button menu-button__close">CLOSE MENU</button>
+      <Cart />
     </div>
   );
 }

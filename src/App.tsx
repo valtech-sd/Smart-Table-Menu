@@ -30,8 +30,9 @@ function App() {
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [showMenu, setShowMenu] = useState(true);
-  const [showMenuActive, setShowMenuActive] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [hoverOpen, setHoverOpen] = useState(false);
+  const [hoverClose, setHoverClose] = useState(false);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
 
@@ -103,36 +104,50 @@ function App() {
   }, [canvasRef.current, handposeModel]);
 
   useEffect(() => {
-    const element = document.getElementById("showMenu");
+    const element = document.getElementById("openMenu");
     const coordinates = element?.getBoundingClientRect();
-    if (
-      indexCoordinates &&
-      coordinates &&
-      coordinates.left <= indexCoordinates.x &&
-      coordinates.right >= indexCoordinates.x &&
-      coordinates.top <= indexCoordinates.y &&
-      coordinates.bottom >= indexCoordinates.y
-    ) {
-      setShowMenuActive((prevShowMenuActive) => !prevShowMenuActive);
 
-      if (showMenu) {
-        setShowMenu((prevShowMenu) => !prevShowMenu);
+    if (indexCoordinates && coordinates) {
+      const hoverCondition =
+        coordinates.left <= indexCoordinates.x &&
+        coordinates.right >= indexCoordinates.x &&
+        coordinates.top <= indexCoordinates.y &&
+        coordinates.bottom >= indexCoordinates.y;
+
+      if (hoverCondition) {
+        setHoverOpen(true);
+        setShowMenu(true);
+      } else {
+        setHoverOpen(false);
       }
-
-      setTimeout(() => setShowMenu((prevShowMenu) => !prevShowMenu), 9000);
     }
-  }, [indexCoordinates, showMenuActive]);
+  }, [indexCoordinates]);
+
+  useEffect(() => {
+    const element = document.getElementById("closeMenu");
+    const coordinates = element?.getBoundingClientRect();
+
+    if (indexCoordinates && coordinates) {
+      const hoverCondition =
+        coordinates.left <= indexCoordinates.x &&
+        coordinates.right >= indexCoordinates.x &&
+        coordinates.top <= indexCoordinates.y &&
+        coordinates.bottom >= indexCoordinates.y;
+
+      if (hoverCondition) {
+        setHoverClose(true);
+        setShowMenu(false);
+      } else {
+        setHoverClose(false);
+      }
+    }
+  }, [indexCoordinates]);
 
   return (
     <div className="App">
       <CartProvider>
         <div className={`toast toast--${toastClass}`}>Item added to cart</div>
-        <button
-          id="showMenu"
-          className={`show-menu ${showMenuActive ? "selected" : ""}`}
-        >
-          TOGGLE MENU
-        </button>
+
         {showMenu && <Menu indexCoordinates={indexCoordinates} />}
         <Webcam
           ref={webcamRef}
@@ -156,6 +171,18 @@ function App() {
             zIndex: 2,
           }}
         />
+        <button
+          id="openMenu"
+          className={`menu-button open ${hoverOpen ? "hovered" : ""}`}
+        >
+          OPEN MENU
+        </button>
+        <button
+          id="closeMenu"
+          className={`menu-button close ${hoverClose ? "hovered" : ""}`}
+        >
+          CLOSE MENU
+        </button>
         <Cart />
       </CartProvider>
     </div>

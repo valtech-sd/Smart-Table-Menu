@@ -1,110 +1,78 @@
-import { useEffect, useRef, useState } from "react";
-import { useCart } from "react-use-cart";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Item, useCart } from "react-use-cart";
 
 import { IndexCoords, MenuItemCoords } from "./types";
-
-const MENU_IDS = [
-  {
-    name: "Hot",
-    items: [
-      {
-        id: 1,
-        name: "americano",
-        price: 9900,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        name: "espresso",
-        price: 16500,
-        quantity: 5,
-      },
-      {
-        id: 3,
-        name: "capuccino",
-        price: 4500,
-        quantity: 1,
-      },
-    ],
-  },
-  {
-    name: "Desserts",
-    items: [
-      {
-        id: 1,
-        name: "croissant",
-        price: 9900,
-        quantity: 1,
-      },
-      {
-        id: 2,
-        name: "bagel",
-        price: 16500,
-        quantity: 5,
-      },
-      {
-        id: 3,
-        name: "brownie",
-        price: 4500,
-        quantity: 1,
-      },
-    ],
-  },
-];
+import { isIndexOnTopOfElement } from "./utils/handpose";
+import MENU from "./utils/menu";
 
 interface MenuProps {
   indexCoordinates?: IndexCoords;
 }
 
 export const Menu = ({ indexCoordinates }: MenuProps) => {
-  const [selectedItem, setSelectedItem] = useState<string>();
+  const [selectedItem, setSelectedItem] = useState<Item>();
+
+  const timeoutId = useRef<number>();
+  const currentItem = useRef<Item>();
   const itemsCoordinates = useRef<MenuItemCoords>({});
+
+  const menuItems = useMemo(() => MENU.flatMap((section) => section.items), []);
+
   const { addItem } = useCart();
+
+  const onSelectedItemChanged = useCallback((selectedItem?: Item) => {
+    currentItem.current = selectedItem;
+    clearTimeout(timeoutId.current);
+  }, []);
 
   useEffect(() => {
     if (indexCoordinates) {
       const entry = Object.entries(itemsCoordinates.current).find((entry) => {
-        const [, coordinates] = entry;
+        const [, { element }] = entry;
 
-        return (
-          coordinates.left < indexCoordinates.x &&
-          coordinates.right > indexCoordinates.x &&
-          coordinates.top < indexCoordinates.y &&
-          coordinates.bottom > indexCoordinates.y
-        );
+        return isIndexOnTopOfElement(indexCoordinates, element);
       });
 
       if (entry) {
-        setSelectedItem(entry[0]);
+        const hoveredItem = menuItems.find((item) => item.name === entry[0]);
+
+        setSelectedItem(hoveredItem);
+      } else {
+        setSelectedItem(undefined);
       }
     }
   }, [indexCoordinates]);
 
   useEffect(() => {
-    const items = MENU_IDS.flatMap((section) => section.items);
+    if (currentItem.current !== selectedItem) {
+      onSelectedItemChanged(selectedItem);
+    }
 
-    items.forEach((item) => {
+    if (selectedItem) {
+      timeoutId.current = setTimeout(() => {
+        if (selectedItem === currentItem.current) {
+          addItem(selectedItem);
+
+          onSelectedItemChanged(undefined);
+        }
+      }, 3000);
+    }
+  }, [selectedItem]);
+
+  useEffect(() => {
+    menuItems.forEach((item) => {
       const [element] = document.getElementsByClassName(item.name);
       const rect = element?.getBoundingClientRect();
 
       if (rect) {
-        itemsCoordinates.current[item.name] = rect;
+        itemsCoordinates.current[item.name] = { rect, element };
       }
     });
   }, []);
 
-  useEffect(() => {
-    if (selectedItem) {
-      const items = MENU_IDS.flatMap((section) => section.items);
-      const selected = items.find((item) => item.name === selectedItem);
-
-      addItem(selected);
-    }
-  }, [selectedItem]);
-
   return (
     <div className="menu">
-      {MENU_IDS.map((section) => (
+      {MENU.map((section) => (
         <div key={section.name} className="menu__section">
           <div className="menu__item menu__title">{section.name}</div>
           <div className="divider" />
@@ -113,7 +81,7 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
               <div
                 key={item.id}
                 className={`menu__item ${item.name} ${
-                  item.name === selectedItem ? "selected" : ""
+                  item.id === selectedItem?.id ? "selected" : ""
                 } `}
               >
                 <p>{item.name}</p>

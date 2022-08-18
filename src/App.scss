@@ -7,25 +7,18 @@
   &:before {
     content: '';
     position: absolute;
-    width: calc(100% + #{$width * 2});
-    height: calc(100% + #{$width * 2});
-    top: calc(#{$width}/-1);
-    left: calc(#{$width}/-1);
-    background: linear-gradient(to right, $color 0%, $color 100%), linear-gradient(to top, $color 50%, transparent 50%), linear-gradient(to top, $color 50%, transparent 50%), linear-gradient(to right, $color 0%, $color 100%), linear-gradient(to left, $color 0%, $color 100%);
-    background-size: 100% $width, $width 200%, $width 200%, 0% $width, 0% $width;
-    background-position: 50% 100%, 0% 0%, 100% 0%, 100% 0%, 0% 0%;
-    background-repeat: no-repeat, no-repeat;
-    transition: transform $duration ease-in-out, background-position $duration ease-in-out, background-size $duration ease-in-out;
-    transform: scaleX(0) rotate(180deg * $direction);
-    transition-delay: $duration*2, $duration, 0s;
+    background: $color;
+    width: 0px;
+    height: 3px;
+    top: 0px;
+    left: 0px;
+
+    transition: width $duration ease-in-out;
   }
 
   &.selected {
     &:before {
-      background-size: 200% $width, $width 400%, $width 400%, 55% $width, 55% $width;
-      background-position: 50% 100%, 0% 100%, 100% 100%, 100% 0%, 0% 0%;
-      transform: scaleX(1) rotate(180deg * $direction);
-      transition-delay: 0s, $duration, $duration*2;
+      width: 100%;
     }
   }
 }
@@ -108,26 +101,30 @@ canvas {
 
 .cart {
   background-color: #ffffffde;
-  padding: 30px 0;
   border-radius: 10px;
   z-index: 3;
   position: absolute;
-  left: 900px;
-  top: 100px;
+  right: 50px;
+  top: 50px;
+  width: 400px;
+  padding: 15px;
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
 
   &__title {
     font-size: 30px;
-    margin-bottom: 15px;
   }
 
   &__item {
     display: flex;
     align-items: start;
     justify-content: space-between;
-    width: 300px;
     font-size: 20px;
     color: #242424;
-    padding: 10px 30px;
+    padding: 10px 15px;
   }
 
   &__btn__container {
@@ -182,7 +179,7 @@ canvas {
     color: #242424;
     padding: 0 30px;
 
-    @include magic-border(3px, #00bc9b, 1.5s, 1);
+    @include magic-border(3px, #00bc9b, 3s, 1);
   }
 
   &__title {
@@ -191,26 +188,21 @@ canvas {
   }
 }
 
-.menu-button {
+.menu-buttons {
   z-index: 5;
   display: flex;
   align-items: start;
-  justify-content: space-between;
-  width: 200px;
   font-size: 20px;
   color: #ffffff;
-  padding: 10px 30px;
-  background-color: #242424;
+  position: absolute;
+  top: 50px;
+  left: 50px;
 
-  &__open {
-    position: absolute;
-    top: 30px;
-    left: 250px;
-  }
+  .menu-button {
+    width: 200px;
 
-  &__close {
-    position: absolute;
-    top: 30px;
-    left: 460px;
+    &__open {
+      margin-right: 50px;
+    }
   }
 }

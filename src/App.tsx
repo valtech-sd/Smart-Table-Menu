@@ -146,8 +146,10 @@ function App() {
         videoConstraints={videoConstraints}
       />
       <canvas ref={canvasRef} />
-      <button className="menu-button menu-button__open">OPEN MENU</button>
-      <button className="menu-button menu-button__close">CLOSE MENU</button>
+      <div className="menu-buttons">
+        <button className="menu-button menu-button__open">OPEN MENU</button>
+        <button className="menu-button menu-button__close">CLOSE MENU</button>
+      </div>
       <Cart />
     </div>
   );

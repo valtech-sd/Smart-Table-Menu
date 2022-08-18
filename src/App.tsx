@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CartProvider } from "react-use-cart";
 import Webcam from "react-webcam";
 import { HandPose } from "@tensorflow-models/handpose";
 
@@ -10,6 +11,7 @@ import useAnimatedValue from "./hooks/useAnimatedValue";
 import { IndexCoords } from "./types";
 
 import { Menu } from "./Menu";
+import { Cart } from "./Cart";
 
 import "./App.scss";
 
@@ -28,7 +30,7 @@ function App() {
 
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   const [showMenuActive, setShowMenuActive] = useState(false);
 
   const progress = useAnimatedValue({ value: 3000, step: 100, active });
@@ -123,36 +125,39 @@ function App() {
 
   return (
     <div className="App">
-      <div className={`toast toast--${toastClass}`}>Item added to cart</div>
-      <button
-        id="showMenu"
-        className={`show-menu ${showMenuActive ? "selected" : ""}`}
-      >
-        TOGGLE MENU
-      </button>
-      {showMenu && <Menu indexCoordinates={indexCoordinates} />}
-      <Webcam
-        ref={webcamRef}
-        muted
-        mirrored={FLIPPED_VIDEO}
-        imageSmoothing
-        videoConstraints={videoConstraints}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-        }}
-      />
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          zIndex: 2,
-        }}
-      />
+      <CartProvider>
+        <div className={`toast toast--${toastClass}`}>Item added to cart</div>
+        <button
+          id="showMenu"
+          className={`show-menu ${showMenuActive ? "selected" : ""}`}
+        >
+          TOGGLE MENU
+        </button>
+        {showMenu && <Menu indexCoordinates={indexCoordinates} />}
+        <Webcam
+          ref={webcamRef}
+          muted
+          mirrored={FLIPPED_VIDEO}
+          imageSmoothing
+          videoConstraints={videoConstraints}
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+          }}
+        />
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            zIndex: 2,
+          }}
+        />
+        <Cart />
+      </CartProvider>
     </div>
   );
 }

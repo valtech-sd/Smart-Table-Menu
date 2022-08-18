@@ -1,14 +1,54 @@
 import { useEffect, useRef, useState } from "react";
+import { useCart } from "react-use-cart";
+
 import { IndexCoords, MenuItemCoords } from "./types";
 
 const MENU_IDS = [
   {
     name: "Hot",
-    items: ["americano", "espresso", "capuccino", "latte", "tea"],
+    items: [
+      {
+        id: 1,
+        name: "americano",
+        price: 9900,
+        quantity: 1,
+      },
+      {
+        id: 2,
+        name: "espresso",
+        price: 16500,
+        quantity: 5,
+      },
+      {
+        id: 3,
+        name: "capuccino",
+        price: 4500,
+        quantity: 1,
+      },
+    ],
   },
   {
     name: "Desserts",
-    items: ["croissant", "bagel", "doughnut", "brownie", "cookie"],
+    items: [
+      {
+        id: 1,
+        name: "croissant",
+        price: 9900,
+        quantity: 1,
+      },
+      {
+        id: 2,
+        name: "bagel",
+        price: 16500,
+        quantity: 5,
+      },
+      {
+        id: 3,
+        name: "brownie",
+        price: 4500,
+        quantity: 1,
+      },
+    ],
   },
 ];
 
@@ -18,7 +58,9 @@ interface MenuProps {
 
 export const Menu = ({ indexCoordinates }: MenuProps) => {
   const [selectedItem, setSelectedItem] = useState<string>();
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const itemsCoordinates = useRef<MenuItemCoords>({});
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (indexCoordinates) {
@@ -43,14 +85,23 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
     const items = MENU_IDS.flatMap((section) => section.items);
 
     items.forEach((item) => {
-      const [element] = document.getElementsByClassName(item);
+      const [element] = document.getElementsByClassName(item.name);
       const rect = element?.getBoundingClientRect();
 
       if (rect) {
-        itemsCoordinates.current[item] = rect;
+        itemsCoordinates.current[item.name] = rect;
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (selectedItem) {
+      const items = MENU_IDS.flatMap((section) => section.items);
+      const selected = items.find(item => item.name === selectedItem);
+      
+      addItem(selected);
+    }
+  }, [selectedItem]);
 
   return (
     <div className="menu">
@@ -61,13 +112,13 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
           <div>
             {section.items.map((item) => (
               <div
-                key={item}
-                className={`menu__item ${item} ${
-                  item === selectedItem ? "selected" : ""
+                key={item.id}
+                className={`menu__item ${item.name} ${
+                  item.name === selectedItem ? "selected" : ""
                 } `}
               >
-                <p>{item}</p>
-                <p>$4.00</p>
+                <p>{item.name}</p>
+                <p>${item.price}</p>
               </div>
             ))}
           </div>

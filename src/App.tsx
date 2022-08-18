@@ -66,7 +66,7 @@ function App() {
           canvasRef.current.height = video.videoHeight;
 
           const indexFinger = predictions[0].annotations.indexFinger;
-          const lastFingerDot = indexFinger.pop();
+          const lastFingerDot = indexFinger.at(-1);
 
           if (lastFingerDot) {
             const [x, y] = lastFingerDot;
@@ -137,22 +137,8 @@ function App() {
         mirrored={FLIPPED_VIDEO}
         imageSmoothing
         videoConstraints={videoConstraints}
-        style={{
-          position: "absolute",
-          marginLeft: "auto",
-          marginRight: "auto",
-          left: 0,
-          right: 0,
-          textAlign: "center",
-        }}
       />
-      <canvas
-        ref={canvasRef}
-        style={{
-          position: "absolute",
-          zIndex: 2,
-        }}
-      />
+      <canvas ref={canvasRef} />
     </div>
   );
 }

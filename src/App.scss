@@ -30,33 +30,42 @@
   }
 }
 
-body {
-  height: 100vh;
+@mixin full-screen {
   width: 100vw;
+  height: 100vh;
+}
+
+body {
   margin: 0;
   font-family: "Josefin Sans", sans-serif;
   overflow: hidden;
   box-sizing: border-box;
   background-color: black;
+  
+  @include full-screen();
 }
 
 video {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  @include full-screen();
 }
 
 #root {
-  height: 100vh;
-  width: 100vw;
   position: relative;
+
+  @include full-screen();
 }
 
 canvas {
   box-shadow: inset 0px 0px 0px 10px white;
-  left: 0;
+  position: absolute;
   top: 0;
-  height: 100vh;
-  width: 100vw;
+  left: 0;
+
+  @include full-screen();
 }
 
 .toast {

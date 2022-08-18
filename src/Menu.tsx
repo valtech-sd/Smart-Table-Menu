@@ -58,7 +58,6 @@ interface MenuProps {
 
 export const Menu = ({ indexCoordinates }: MenuProps) => {
   const [selectedItem, setSelectedItem] = useState<string>();
-  const [isAdding, setIsAdding] = useState<boolean>(false);
   const itemsCoordinates = useRef<MenuItemCoords>({});
   const { addItem } = useCart();
 

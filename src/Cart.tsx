@@ -17,23 +17,7 @@ export const Cart = () => {
       <ul className="cart__section">
         {items.map((item) => (
           <li key={item.id} className="cart__item">
-            {" "}
-            <span>{item.name}</span>
-            <div className="cart__btn__container">
-              <button
-                className="cart__control__btn"
-                onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
-              >
-                -
-              </button>
-              <span className="cart__counter__output">{item.quantity}</span>
-              <button
-                className="cart__control__btn"
-                onClick={() => updateItemQuantity(item.id, item.quantity + 1)}
-              >
-                +
-              </button>
-            </div>
+            <span>{item.quantity} x {item.name}</span>
           </li>
         ))}
       </ul>

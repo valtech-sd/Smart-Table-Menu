@@ -18,7 +18,7 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
 
   const menuItems = useMemo(() => MENU.flatMap((section) => section.items), []);
 
-  const { addItem } = useCart();
+  const { addItem, updateItemQuantity } = useCart();
 
   const onSelectedItemChanged = useCallback((selectedItem?: Item) => {
     currentItem.current = selectedItem;
@@ -78,14 +78,35 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
           <div className="divider" />
           <div>
             {section.items.map((item) => (
-              <div
-                key={item.id}
-                className={`menu__item ${item.name} ${
-                  item.id === selectedItem?.id ? "selected" : ""
-                } `}
-              >
-                <p>{item.name}</p>
-                <p>${item.price}</p>
+              <div className="menu__wrapper">
+                <div
+                  key={item.id}
+                  className={`menu__item ${item.name} ${
+                    item.id === selectedItem?.id ? "selected" : ""
+                  } `}
+                >
+                  <p>{item.name}</p>
+                  <p>${item.price}</p>
+                </div>
+                <div className="menu__btn__container">
+                  <button
+                    className="menu__control__btn"
+                    onClick={() =>
+                      updateItemQuantity(item.id, item.quantity - 1)
+                    }
+                  >
+                    -
+                  </button>
+                  <span className="menu__counter__output">{item.quantity}</span>
+                  <button
+                    className="menu__control__btn"
+                    onClick={() =>
+                      updateItemQuantity(item.id, item.quantity + 1)
+                    }
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             ))}
           </div>

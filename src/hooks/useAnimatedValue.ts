@@ -15,12 +15,9 @@ export default function useAnimatedValue({
 
   const intervalRef = useRef<number>();
 
-  console.log('active: ', active);
-  console.log('intervalRef: ', intervalRef);
-  console.log('intervalRef.current: ', intervalRef.current);
-
   useEffect(() => {
-    // if (active) {
+    // A. Humes - commenting out since 'active' is never true, and `internalRef.current` is not typed correctly, causing prod build failure 
+    //if (active) {
     //   intervalRef.current = setInterval(() => {
     //     setProgress((prevProgress) => {
     //       if (prevProgress === value - step) {

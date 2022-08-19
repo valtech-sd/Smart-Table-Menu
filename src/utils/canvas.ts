@@ -40,6 +40,7 @@ const style = {
   20: { color: "gold", size: 6 },
 };
 
+// A. Humes - commenting out since 'render' is never used, and `fingerJoints[finger]` is not typed correctly, causing prod build failure
 // export const render = (
 //   canvasContext: CanvasRenderingContext2D | null | undefined,
 //   predictions: any,

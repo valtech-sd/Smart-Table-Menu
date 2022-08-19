@@ -1,3 +1,6 @@
+// A. Humes - commenting out since `gestureDectect` is never called, and `gestures` had TS errors, causing prod build failure.
+// 'fingerpose' changed to return empty since it is a moduled required elsewhere.
+
 // import * as fp from "fingerpose";
 
 // export async function gestureDetect(predictions: any) {

@@ -15,18 +15,22 @@ export default function useAnimatedValue({
 
   const intervalRef = useRef<number>();
 
-  useEffect(() => {
-    if (active) {
-      intervalRef.current = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress === value - step) {
-            clearInterval(intervalRef.current);
-          }
+  console.log('active: ', active);
+  console.log('intervalRef: ', intervalRef);
+  console.log('intervalRef.current: ', intervalRef.current);
 
-          return prevProgress + step;
-        });
-      }, step);
-    }
+  useEffect(() => {
+    // if (active) {
+    //   intervalRef.current = setInterval(() => {
+    //     setProgress((prevProgress) => {
+    //       if (prevProgress === value - step) {
+    //         clearInterval(intervalRef.current);
+    //       }
+
+    //       return prevProgress + step;
+    //     });
+    //   }, step);
+    // }
 
     return () => {
       clearInterval(intervalRef.current);

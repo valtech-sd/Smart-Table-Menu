@@ -36,6 +36,7 @@ function App() {
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
 
   useEffect(() => {
+    console.log('progress: ', progress);
     if (progress === 100) {
       setShowToast(true);
       setTimeout(() => setActive(false), 500);

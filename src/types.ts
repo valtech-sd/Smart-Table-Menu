@@ -1,8 +1,11 @@
+import { Item } from "react-use-cart";
+
 export type IndexCoords = {
   x: number;
   y: number;
 };
 
-export interface MenuItemCoords {
-  [key: string]: DOMRect;
-}
+export type MenuSection = {
+  name: string;
+  items: Item[];
+};

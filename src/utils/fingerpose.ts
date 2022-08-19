@@ -1,30 +1,14 @@
-// A. Humes - commenting out since `gestureDectect` is never called, and `gestures` had TS errors, causing prod build failure.
-// 'fingerpose' changed to return empty since it is a moduled required elsewhere.
+import { AnnotatedPrediction } from "@tensorflow-models/handpose";
+import * as fp from "fingerpose";
 
-// import * as fp from "fingerpose";
+export async function gestureDetect(predictions: AnnotatedPrediction[]) {
+  if (predictions.length > 0) {
+    const GE = new fp.GestureEstimator([fp.Gestures.ThumbsUpGesture]);
 
-// export async function gestureDetect(predictions: any) {
-//   if (predictions.length > 0) {
-//     const GE = new fp.GestureEstimator([
-//       fp.Gestures.VictoryGesture,
-//       fp.Gestures.ThumbsUpGesture,
-//     ]);
+    const { gestures } = await GE.estimate(predictions[0].landmarks, 8);
 
-//     const { gestures } = await GE.estimate(predictions[0].landmarks, 8);
-
-//     console.log('gestures: ', gestures);
-
-//     if (gestures && gestures.length > 0) {
-//       const confidence = gestures.map(({ score }) => score);
-//       const maxConfidence = confidence.indexOf(
-//         Math.max.apply(null, confidence)
-//       );
-
-//       return gestures[maxConfidence].name;
-//     }
-//   }
-// }
-
-
-
-export {}
+    if (gestures.length) {
+      return gestures[0].name;
+    }
+  }
+}

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Item, useCart } from "react-use-cart";
 
 import useGetElementBeingPressed from "../../hooks/useGetElementBeingPressed";
 import useIsElementBeingPressed from "../../hooks/useIsElementBeingPressed";
 import MENU from "../../utils/menu";
+import useMenuCart from "../../hooks/useMenuCart";
 
 import MenuEntry from "./MenuEntry";
 
@@ -17,7 +17,7 @@ interface MenuProps {
 export const Menu = ({ indexCoordinates, showMenu }: MenuProps) => {
   const [showQuantityMenu, setShowQuantityMenu] = useState("");
 
-  const { addItem, removeItem } = useCart();
+  const { addItem, removeItem } = useMenuCart();
 
   const { pressedElementId, pressedElementProduct } =
     useGetElementBeingPressed(indexCoordinates);

@@ -1,7 +1,7 @@
 import { useCart } from "react-use-cart";
 
 export const Cart = () => {
-  const { isEmpty, totalUniqueItems, updateItemQuantity, items } = useCart();
+  const { isEmpty, totalUniqueItems, items } = useCart();
 
   if (isEmpty)
     return (

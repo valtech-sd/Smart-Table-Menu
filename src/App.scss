@@ -148,8 +148,6 @@ canvas {
     font-size: 20px;
     color: #242424;
     padding: 0 30px;
-
-    @include magic-border(3px, #00bc9b, 3s, 1);
   }
 
   &__title {
@@ -157,20 +155,21 @@ canvas {
     margin-bottom: 15px;
   }
 
-  &__wrapper {
+  &__item-wrapper {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: row;
+
+    @include magic-border(3px, #00bc9b, 3s, 1);
   }
 
   &__btn__container {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-direction: row;
     column-gap: 20px;
-    width: 150px;
     padding-right: 30px;
   }
   

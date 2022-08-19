@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Item, useCart } from "react-use-cart";
 
 import { IndexCoords, MenuItemCoords } from "./types";
@@ -18,7 +18,7 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
 
   const menuItems = useMemo(() => MENU.flatMap((section) => section.items), []);
 
-  const { addItem, updateItemQuantity } = useCart();
+  const { addItem, updateItemQuantity, items: cartItems } = useCart();
 
   const onSelectedItemChanged = useCallback((selectedItem?: Item) => {
     currentItem.current = selectedItem;
@@ -78,34 +78,49 @@ export const Menu = ({ indexCoordinates }: MenuProps) => {
           <div className="divider" />
           <div>
             {section.items.map((item) => (
-              <div className="menu__wrapper">
-                <div
-                  key={item.id}
-                  className={`menu__item ${item.name} ${
-                    item.id === selectedItem?.id ? "selected" : ""
-                  } `}
-                >
+              <div
+                className={`menu__item-wrapper ${item.name} ${
+                  item.id === selectedItem?.id ? "selected" : ""
+                }`}
+                key={item.id}
+              >
+                <div className="menu__item">
                   <p>{item.name}</p>
                   <p>${item.price}</p>
                 </div>
                 <div className="menu__btn__container">
-                  <button
-                    className="menu__control__btn"
-                    onClick={() =>
-                      updateItemQuantity(item.id, item.quantity - 1)
-                    }
-                  >
-                    -
-                  </button>
-                  <span className="menu__counter__output">{item.quantity}</span>
-                  <button
-                    className="menu__control__btn"
-                    onClick={() =>
-                      updateItemQuantity(item.id, item.quantity + 1)
-                    }
-                  >
-                    +
-                  </button>
+                  {cartItems.map(
+                    (cartItem) =>
+                      cartItem.id === item.id &&
+                      cartItem.quantity > 0 && (
+                        <Fragment key={cartItem.id}>
+                          <button
+                            className="menu__control__btn"
+                            onClick={() =>
+                              updateItemQuantity(cartItem.id, cartItem.quantity - 1)
+                            }
+                          >
+                            -
+                          </button>
+
+                          <span className="menu__counter__output">
+                            {cartItem.quantity}
+                          </span>
+
+                          <button
+                            className="menu__control__btn"
+                            onClick={() =>
+                              updateItemQuantity(
+                                cartItem.id,
+                                cartItem.quantity + 1
+                              )
+                            }
+                          >
+                            +
+                          </button>
+                        </Fragment>
+                      )
+                  )}
                 </div>
               </div>
             ))}

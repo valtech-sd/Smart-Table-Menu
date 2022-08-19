@@ -47,7 +47,7 @@ body {
   overflow: hidden;
   box-sizing: border-box;
   background-color: black;
-  
+
   @include full-screen();
 }
 
@@ -76,7 +76,7 @@ canvas {
 
 .toast {
   position: absolute;
-  top: 50px;
+  top: 100px;
   right: 50px;
   background-color: #00bc9b;
   padding: 20px 50px;
@@ -192,7 +192,7 @@ canvas {
     border: 2px solid black;
     border-left: none;
   }
-  
+
   &__control__btn {
       font-size: 20px;
       padding: 0 30px;
@@ -207,12 +207,6 @@ canvas {
   &__counter__output {
     font-size: 16px;
     color: black;
-  }
-
-  &__control__btn:hover {
-      background-color: rgb(16, 0, 54);
-      color: rgb(255, 255, 255);
-      border: 1px solid rgb(16, 0, 54);
   }
 }
 

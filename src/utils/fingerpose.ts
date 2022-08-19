@@ -2,10 +2,7 @@ import * as fp from "fingerpose";
 
 export async function gestureDetect(predictions: any) {
   if (predictions.length > 0) {
-    const GE = new fp.GestureEstimator([
-      fp.Gestures.VictoryGesture,
-      fp.Gestures.ThumbsUpGesture,
-    ]);
+    const GE = new fp.GestureEstimator([fp.Gestures.ThumbsUpGesture]);
 
     const { gestures } = await GE.estimate(predictions[0].landmarks, 8);
 

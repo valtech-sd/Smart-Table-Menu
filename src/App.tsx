@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { HandPose } from "@tensorflow-models/handpose";
 
-import { isIndexOnTopOfElement, loadHandposeModel } from "./utils/handpose";
+import { loadHandposeModel } from "./utils/handpose";
 import { isWebcamReady } from "./utils/webcam";
 import { FLIPPED_VIDEO } from "./utils/config";
 import useAnimatedValue from "./hooks/useAnimatedValue";
+import useGetElementBeingPressed from "./hooks/useGetElementBeingPressed";
 
 import { IndexCoords } from "./types";
 
-import { Menu } from "./Menu";
-import { Cart } from "./Cart";
+import { Menu } from "./components/Menu";
+import { Cart } from "./components/Cart";
 
 import "./App.scss";
 
@@ -28,6 +29,8 @@ function App() {
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
 
+  const { pressedElementId } = useGetElementBeingPressed(indexCoordinates);
+
   const [active, setActive] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -44,20 +47,14 @@ function App() {
   }, [progress]);
 
   useEffect(() => {
-    const [element] = document.getElementsByClassName("menu-button__open");
-
-    if (isIndexOnTopOfElement(indexCoordinates, element)) {
+    if (pressedElementId === "open-menu") {
       setShowMenu(true);
     }
-  }, [indexCoordinates]);
 
-  useEffect(() => {
-    const [element] = document.getElementsByClassName("menu-button__close");
-
-    if (isIndexOnTopOfElement(indexCoordinates, element)) {
+    if (pressedElementId === "close-menu") {
       setShowMenu(false);
     }
-  }, [indexCoordinates]);
+  }, [pressedElementId]);
 
   useEffect(() => {
     if (showToast) {
@@ -137,7 +134,7 @@ function App() {
   return (
     <div className="App">
       <div className={`toast toast--${toastClass}`}>Item added to cart</div>
-      {showMenu && <Menu indexCoordinates={indexCoordinates} />}
+      <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
       <Webcam
         ref={webcamRef}
         muted
@@ -147,8 +144,18 @@ function App() {
       />
       <canvas ref={canvasRef} />
       <div className="menu-buttons">
-        <button className="menu-button menu-button__open">OPEN MENU</button>
-        <button className="menu-button menu-button__close">CLOSE MENU</button>
+        <button
+          className="pressable menu-button menu-button__open"
+          data-pressable-id="open-menu"
+        >
+          OPEN MENU
+        </button>
+        <button
+          className="pressable menu-button menu-button__close"
+          data-pressable-id="close-menu"
+        >
+          CLOSE MENU
+        </button>
       </div>
       <Cart />
     </div>

@@ -17,7 +17,9 @@ export const Cart = () => {
       <ul className="cart__section">
         {items.map((item) => (
           <li key={item.id} className="cart__item">
-            <span>{item.quantity} x {item.name}</span>
+            <span>
+              {item.quantity} x {item.name}
+            </span>
           </li>
         ))}
       </ul>

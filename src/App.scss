@@ -4,23 +4,36 @@
 @mixin magic-border($width, $color, $duration, $direction) {
   position: relative;
 
-  &:before {
+  &:before,
+  &:after {
     content: '';
     position: absolute;
     background: $color;
     width: 0px;
-    height: 3px;
-    top: 0px;
+    height: 2px;
     left: 0px;
 
     transition: width $duration ease-in-out;
   }
 
+  &:before {
+    top: 0px;
+  }
+
+  &:after {
+    bottom: 0px;
+  }
+
   &.selected {
-    &:before {
+    &:before, 
+    &:after {
       width: 100%;
     }
   }
+}
+
+.show {
+  opacity: 1 !important;
 }
 
 @mixin full-screen {
@@ -92,13 +105,6 @@ canvas {
   align-items: start;
 }
 
-
-.divider {
-  height: 1px;
-  width: 100%;
-  background-color: #242424;
-}
-
 .cart {
   background-color: #ffffffde;
   border-radius: 10px;
@@ -128,13 +134,15 @@ canvas {
 }
 
 .menu {
-  background-color: #ffffffde;
+  background-color: white;
+  border: 2px solid black;
   padding: 30px 0;
   border-radius: 10px;
   z-index: 3;
   position: absolute;
   left: 50px;
   top: 100px;
+  opacity: 0;
 
   &__section:not(:last-child) {
     margin-bottom: 30px;
@@ -147,7 +155,7 @@ canvas {
     width: 200px;
     font-size: 20px;
     color: #242424;
-    padding: 0 30px;
+    padding: 0 40px;
   }
 
   &__title {
@@ -160,32 +168,45 @@ canvas {
     justify-content: flex-start;
     align-items: center;
     flex-direction: row;
+    margin-top: -2px;
 
     @include magic-border(3px, #00bc9b, 3s, 1);
   }
 
   &__btn__container {
     display: flex;
-    justify-content: flex-start;
+    box-sizing: border-box;
+    justify-content: space-between;
+    padding: 8px;
     align-items: center;
     flex-direction: row;
-    column-gap: 20px;
-    padding-right: 30px;
+    position: absolute;
+    right: -200px;
+    width: 200px;
+    top: 0;
+    bottom: 0;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    opacity: 0;
+    background-color: white;
+    border: 2px solid black;
+    border-left: none;
   }
   
   &__control__btn {
       font-size: 20px;
-      padding: 5px 20px;
-      background-color: transparent;
-      color: rgb(16, 0, 54);
-      border: 1px solid rgb(16, 0, 54);
+      padding: 0 30px;
+      height: 100%;
+      background-color: #00bc9b;
+      color: white;
+      font-size: 24px;
       cursor: pointer;
       transition: 0.2s ease-in-out;
   }
   
   &__counter__output {
     font-size: 16px;
-    color: rgb(116, 7, 7);
+    color: black;
   }
 
   &__control__btn:hover {

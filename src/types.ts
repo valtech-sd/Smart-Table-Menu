@@ -5,13 +5,7 @@ export type IndexCoords = {
   y: number;
 };
 
-export interface MenuItemCoords {
-  [key: string]: { rect: DOMRect; element: Element };
-}
-
 export type MenuSection = {
   name: string;
   items: Item[];
 };
-
-export type Menu = MenuSection[];

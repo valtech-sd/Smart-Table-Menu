@@ -1,18 +1,11 @@
 import { useCart } from "react-use-cart";
 
 export const Cart = () => {
-  const { isEmpty, totalUniqueItems, items } = useCart();
-
-  if (isEmpty)
-    return (
-      <div className="cart">
-        <div className="cart__item cart__title">Your cart is empty</div>
-      </div>
-    );
+  const { items, cartTotal } = useCart();
 
   return (
     <div className="cart">
-      <div className="cart__item cart__title">Cart ({totalUniqueItems})</div>
+      <div className="cart__item cart__title">Cart - ${cartTotal}</div>
       <div className="divider" />
       <ul className="cart__section">
         {items.map((item) => (
@@ -23,6 +16,10 @@ export const Cart = () => {
           </li>
         ))}
       </ul>
+      <div className="divider" />
+      <div className="cart__footer">
+        When ready to place your order, do a 👍 sign to the camera
+      </div>
     </div>
   );
 };

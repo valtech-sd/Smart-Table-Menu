@@ -16,17 +16,18 @@ export default function useAnimatedValue({
   const intervalRef = useRef<number>();
 
   useEffect(() => {
-    if (active) {
-      intervalRef.current = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress === value - step) {
-            clearInterval(intervalRef.current);
-          }
+    // A. Humes - commenting out since 'active' is never true, and `internalRef.current` is not typed correctly, causing prod build failure 
+    //if (active) {
+    //   intervalRef.current = setInterval(() => {
+    //     setProgress((prevProgress) => {
+    //       if (prevProgress === value - step) {
+    //         clearInterval(intervalRef.current);
+    //       }
 
-          return prevProgress + step;
-        });
-      }, step);
-    }
+    //       return prevProgress + step;
+    //     });
+    //   }, step);
+    // }
 
     return () => {
       clearInterval(intervalRef.current);

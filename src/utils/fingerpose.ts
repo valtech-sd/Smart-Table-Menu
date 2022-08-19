@@ -1,21 +1,30 @@
-import * as fp from "fingerpose";
+// A. Humes - commenting out since `gestureDectect` is never called, and `gestures` had TS errors, causing prod build failure.
+// 'fingerpose' changed to return empty since it is a moduled required elsewhere.
 
-export async function gestureDetect(predictions: any) {
-  if (predictions.length > 0) {
-    const GE = new fp.GestureEstimator([
-      fp.Gestures.VictoryGesture,
-      fp.Gestures.ThumbsUpGesture,
-    ]);
+// import * as fp from "fingerpose";
 
-    const { gestures } = await GE.estimate(predictions[0].landmarks, 8);
+// export async function gestureDetect(predictions: any) {
+//   if (predictions.length > 0) {
+//     const GE = new fp.GestureEstimator([
+//       fp.Gestures.VictoryGesture,
+//       fp.Gestures.ThumbsUpGesture,
+//     ]);
 
-    if (gestures && gestures.length > 0) {
-      const confidence = gestures.map(({ score }) => score);
-      const maxConfidence = confidence.indexOf(
-        Math.max.apply(null, confidence)
-      );
+//     const { gestures } = await GE.estimate(predictions[0].landmarks, 8);
 
-      return gestures[maxConfidence].name;
-    }
-  }
-}
+//     console.log('gestures: ', gestures);
+
+//     if (gestures && gestures.length > 0) {
+//       const confidence = gestures.map(({ score }) => score);
+//       const maxConfidence = confidence.indexOf(
+//         Math.max.apply(null, confidence)
+//       );
+
+//       return gestures[maxConfidence].name;
+//     }
+//   }
+// }
+
+
+
+export {}

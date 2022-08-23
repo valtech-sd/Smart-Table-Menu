@@ -24,10 +24,10 @@ pnpm run dev
 
 ## Features
 
-This repository is 🔋 battery packed with:
+This webapp has two different routes you can visit (after running `pnpm run dev`):
 
-- ⚛️ React 18
-- ✨ TypeScript
+- '/': This is the main path which shows the menu and cart on top of a black background. This was thought as the real life scenario where the demo gets projected on a dummy table with the goal of converting it into a smart table.
+- '/webcam': This is the path which shows the menu and cart on top of a webcam preview. We added this route in order to develop and test the demo functionality in a easier way.
 
 ## Libraries
 

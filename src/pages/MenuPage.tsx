@@ -6,7 +6,6 @@ import { useCart } from "react-use-cart";
 import { loadHandposeModel } from "../utils/handpose";
 import { isWebcamReady } from "../utils/webcam";
 import { gestureDetect } from "../utils/fingerpose";
-import { FLIPPED_VIDEO } from "../utils/config";
 import useGetElementBeingPressed from "../hooks/useGetElementBeingPressed";
 
 import { IndexCoords } from "../types";
@@ -26,7 +25,6 @@ interface MenuPageProps {
 
 function MenuPage({ webcam = false }: MenuPageProps) {
   const { isEmpty, emptyCart } = useCart();
-
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
@@ -89,7 +87,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       if (video && handposeModel) {
         const predictions = await handposeModel.estimateHands(
           video,
-          FLIPPED_VIDEO
+          import.meta.env.VITE_FLIPPED_VIDEO as boolean
         );
 
         if (predictions.length && canvasRef.current) {
@@ -155,7 +153,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       <Webcam
         ref={webcamRef}
         muted
-        mirrored={FLIPPED_VIDEO}
+        mirrored={import.meta.env.VITE_FLIPPED_VIDEO as boolean}
         imageSmoothing
         videoConstraints={videoConstraints}
         style={{ opacity: Number(webcam) }}

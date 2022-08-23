@@ -25,7 +25,8 @@
   }
 
   &.selected {
-    &:before, 
+
+    &:before,
     &:after {
       width: 100%;
     }
@@ -33,7 +34,7 @@
 }
 
 .show {
-  opacity: 1 !important;
+  opacity: 0.8 !important;
 }
 
 @mixin full-screen {
@@ -206,16 +207,16 @@ canvas {
   }
 
   &__control__btn {
-      font-size: 20px;
-      padding: 0 30px;
-      height: 100%;
-      background-color: #00bc9b;
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      transition: 0.2s ease-in-out;
+    font-size: 20px;
+    padding: 0 30px;
+    height: 100%;
+    background-color: #00bc9b;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s ease-in-out;
   }
-  
+
   &__counter__output {
     font-size: 16px;
     color: black;

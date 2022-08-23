@@ -28,7 +28,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
-  const timeoutId = useRef<number>();
+  const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();

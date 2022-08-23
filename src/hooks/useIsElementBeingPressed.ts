@@ -4,7 +4,7 @@ import useGetElementBeingPressed from "./useGetElementBeingPressed";
 
 const useIsElementBeingPressed = (duration = 0, indexCoords?: IndexCoords) => {
   const currentItem = useRef<string>();
-  const timeoutId = useRef<number>();
+  const timeoutId = useRef<any>();
 
   const [isPressed, setIsPressed] = useState(false);
 

@@ -30,6 +30,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const requestRef = useRef<number>();
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
+  const fingerHoverSelectionTime = 1500;
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -60,7 +61,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
 
           onSelectedItemChanged(undefined);
         }
-      }, 3000);
+      }, fingerHoverSelectionTime);
     }
   }, [emoji]);
 
@@ -76,7 +77,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
 
   useEffect(() => {
     if (showToast) {
-      setTimeout(() => setShowToast(false), 2000);
+      setTimeout(() => setShowToast(false), fingerHoverSelectionTime);
     }
   }, [showToast]);
 
@@ -85,6 +86,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       const { video } = webcamRef.current;
 
       if (video && handposeModel) {
+        // console.log('import.meta.env.VITE_FLIPPED_VIDEO as boolean: ', import.meta.env.VITE_FLIPPED_VIDEO as boolean);
         const predictions = await handposeModel.estimateHands(
           video,
           import.meta.env.VITE_FLIPPED_VIDEO as boolean

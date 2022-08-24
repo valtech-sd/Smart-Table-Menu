@@ -1,3 +1,8 @@
+/*
+  Is this file needed anymore??
+*/
+
+
 // Points for fingers
 const fingerJoints: FingerJoints = {
   thumb: [0, 1, 2, 3, 4],

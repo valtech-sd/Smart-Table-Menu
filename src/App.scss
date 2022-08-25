@@ -47,7 +47,7 @@ body {
   font-family: "Josefin Sans", sans-serif;
   overflow: hidden;
   box-sizing: border-box;
-  background-color: black;
+  // background-color: black;
 
   @include full-screen();
 }
@@ -67,7 +67,7 @@ video {
 }
 
 canvas {
-  box-shadow: inset 0px 0px 0px 10px white;
+  // box-shadow: inset 0px 0px 0px 10px white;
   position: absolute;
   top: 0;
   left: 0;

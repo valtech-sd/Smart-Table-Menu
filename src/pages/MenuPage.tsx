@@ -110,6 +110,8 @@ function MenuPage({ webcam = false }: MenuPageProps) {
             if (canvasContext) {
               canvasContext.beginPath();
               canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
+              canvasContext.fillStyle = 'white';
+              canvasContext.fill();
               canvasContext.stroke();
             }
 

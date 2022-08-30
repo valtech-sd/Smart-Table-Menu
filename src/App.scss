@@ -34,7 +34,7 @@
 }
 
 .show {
-  opacity: 0.8 !important;
+  opacity: .9 !important;
 }
 
 @mixin full-screen {
@@ -107,7 +107,7 @@ canvas {
 }
 
 .cart {
-  background-color: #ffffffde;
+  background-color: #ffffff; // #ffffffde;
   border-radius: 10px;
   z-index: 3;
   position: absolute;

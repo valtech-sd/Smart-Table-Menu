@@ -110,7 +110,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
             if (canvasContext) {
               canvasContext.beginPath();
               canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = 'white';
+              canvasContext.fillStyle = 'red';
               canvasContext.fill();
               canvasContext.stroke();
             }
@@ -161,6 +161,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         imageSmoothing
         videoConstraints={videoConstraints}
         style={{ opacity: Number(webcam) }}
+        // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />
       <canvas ref={canvasRef} />
       <div className="menu-buttons">

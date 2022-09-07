@@ -147,8 +147,8 @@ canvas {
 }
 
 .menu {
-  background-color: white;
-  border: 2px solid black;
+  // background-color: white;
+  border: 2px solid white; // black;
   padding: 30px 0;
   border-radius: 10px;
   z-index: 3;
@@ -167,7 +167,7 @@ canvas {
     justify-content: space-between;
     width: 200px;
     font-size: 20px;
-    color: #242424;
+    color: white; // #242424;
     padding: 0 40px;
   }
 
@@ -201,8 +201,8 @@ canvas {
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     opacity: 0;
-    background-color: white;
-    border: 2px solid black;
+    // background-color: white;
+    border: 2px solid #00bc9b; // black;
     border-left: none;
   }
 
@@ -219,7 +219,7 @@ canvas {
 
   &__counter__output {
     font-size: 16px;
-    color: black;
+    color: white; // black;
   }
 }
 

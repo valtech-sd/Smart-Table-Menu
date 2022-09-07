@@ -32,6 +32,25 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const currentItem = useRef<string>();
   const fingerHoverSelectionTime = 1500;
 
+  //////////////////////////
+  const [deviceId, setDeviceId] = useState('');
+
+  const handleDevices = useCallback((mediaDevices: MediaDeviceInfo[]) => {
+    const snapCamera = mediaDevices.find(
+      (mediaDevice) => mediaDevice.label === "OBS Virtual Camera"
+    );
+  
+    if (snapCamera) {
+      setDeviceId(snapCamera?.deviceId);
+    }
+  }, []);
+  
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then(handleDevices);
+  }, [handleDevices]);
+  //////////////////////////
+
+
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
 
@@ -159,10 +178,11 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         muted
         mirrored={import.meta.env.VITE_FLIPPED_VIDEO as boolean}
         imageSmoothing
-        videoConstraints={videoConstraints}
+        videoConstraints={{ ...videoConstraints, deviceId }}
         style={{ opacity: Number(webcam) }}
         // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />
+
       <canvas ref={canvasRef} />
       <div className="menu-buttons">
         <button

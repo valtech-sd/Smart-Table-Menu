@@ -153,8 +153,8 @@ canvas {
   border-radius: 10px;
   z-index: 3;
   position: absolute;
-  left: 50px;
-  top: 100px;
+  left: 250px;
+  top: 300px;
   opacity: 0;
 
   &__section:not(:last-child) {
@@ -229,8 +229,8 @@ canvas {
   font-size: 20px;
   color: #ffffff;
   position: absolute;
-  top: 50px;
-  left: 50px;
+  top: 250px;
+  left: 250px;
 
   .menu-button {
     width: 200px;

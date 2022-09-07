@@ -194,8 +194,8 @@ canvas {
     align-items: center;
     flex-direction: row;
     position: absolute;
-    right: -200px;
-    width: 200px;
+    right: -300px;
+    width: 300px;
     top: 0;
     bottom: 0;
     border-bottom-right-radius: 10px;
@@ -207,12 +207,11 @@ canvas {
   }
 
   &__control__btn {
-    font-size: 20px;
-    padding: 0 30px;
+    padding: 0 45px;
     height: 100%;
     background-color: #00bc9b;
     color: white;
-    font-size: 24px;
+    font-size: 31px;
     cursor: pointer;
     transition: 0.2s ease-in-out;
   }

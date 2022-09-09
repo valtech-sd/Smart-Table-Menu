@@ -16,7 +16,6 @@ import { Cart } from "../components/Cart";
 const videoConstraints = {
   width: window.innerWidth,
   height: window.innerHeight,
-  facingMode: "user",
 };
 
 interface MenuPageProps {
@@ -33,23 +32,29 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const fingerHoverSelectionTime = 1500;
 
   //////////////////////////
-  const [deviceId, setDeviceId] = useState('');
+  const [deviceId, setDeviceId] = useState("");
+  const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
+  const [value, setValue] = useState("");
 
-  const handleDevices = useCallback((mediaDevices: MediaDeviceInfo[]) => {
-    const snapCamera = mediaDevices.find(
-      (mediaDevice) => mediaDevice.label === "OBS Virtual Camera"
-    );
-  
-    if (snapCamera) {
-      setDeviceId(snapCamera?.deviceId);
+  const handleChange = (event: any) => {
+    if (mediaDevices) {
+      const device = mediaDevices.find(
+        (mediaDevice) => mediaDevice.label === event.target.value
+      );
+      setValue(device?.label!);
+      setDeviceId(device?.deviceId!);
     }
-  }, []);
-  
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then(handleDevices);
-  }, [handleDevices]);
-  //////////////////////////
+  };
 
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      const filteredDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
+      setMediaDevices(filteredDevices);
+    });
+  }, []);
+  //////////////////////////
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -66,6 +71,19 @@ function MenuPage({ webcam = false }: MenuPageProps) {
     currentItem.current = selectedItem;
     clearTimeout(timeoutId.current);
   }, []);
+
+  const WebCamComponent = useMemo(() => {
+    return (
+      <Webcam
+        ref={webcamRef}
+        muted
+        imageSmoothing
+        videoConstraints={{ ...videoConstraints, deviceId }}
+        style={{ opacity: Number(webcam) }}
+        // style={{ display: Number(webcam) ? 'block' : 'none' }}
+      />
+    );
+  }, [deviceId]);
 
   useEffect(() => {
     if (currentItem.current !== emoji) {
@@ -129,7 +147,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
             if (canvasContext) {
               canvasContext.beginPath();
               canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = 'red';
+              canvasContext.fillStyle = "red";
               canvasContext.fill();
               canvasContext.stroke();
             }
@@ -171,17 +189,16 @@ function MenuPage({ webcam = false }: MenuPageProps) {
 
   return (
     <div className="App">
+      <select value={value} onChange={handleChange} className="dropdown">
+        {mediaDevices?.map((device) => (
+          <option key={device.label} value={device.label}>
+            {device.label}
+          </option>
+        ))}
+      </select>
       <div className={`toast toast--${toastClass}`}>Order in progress!</div>
       <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
-      <Webcam
-        ref={webcamRef}
-        muted
-        mirrored={import.meta.env.VITE_FLIPPED_VIDEO as boolean}
-        imageSmoothing
-        videoConstraints={{ ...videoConstraints, deviceId }}
-        style={{ opacity: Number(webcam) }}
-        // style={{ display: Number(webcam) ? 'block' : 'none' }}
-      />
+      {WebCamComponent}
 
       <canvas ref={canvasRef} />
       <div className="menu-buttons">

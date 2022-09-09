@@ -43,6 +43,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       );
       setValue(device?.label!);
       setDeviceId(device?.deviceId!);
+      requestRef.current = requestAnimationFrame(app);
     }
   };
 
@@ -71,19 +72,6 @@ function MenuPage({ webcam = false }: MenuPageProps) {
     currentItem.current = selectedItem;
     clearTimeout(timeoutId.current);
   }, []);
-
-  const WebCamComponent = useMemo(() => {
-    return (
-      <Webcam
-        ref={webcamRef}
-        muted
-        imageSmoothing
-        videoConstraints={{ ...videoConstraints, deviceId }}
-        style={{ opacity: Number(webcam) }}
-        // style={{ display: Number(webcam) ? 'block' : 'none' }}
-      />
-    );
-  }, [deviceId]);
 
   useEffect(() => {
     if (currentItem.current !== emoji) {
@@ -159,7 +147,13 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         setIndexCoordinates(undefined);
       }
     }
-  }, [webcamRef.current, canvasRef.current, handposeModel]);
+  }, [
+    webcamRef.current,
+    canvasRef.current,
+    handposeModel,
+    isWebcamReady,
+    deviceId,
+  ]);
 
   const app = useCallback(() => {
     detect();
@@ -198,7 +192,14 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       </select>
       <div className={`toast toast--${toastClass}`}>Order in progress!</div>
       <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
-      {WebCamComponent}
+      <Webcam
+        ref={webcamRef}
+        muted
+        imageSmoothing
+        videoConstraints={{ ...videoConstraints, deviceId }}
+        style={{ opacity: Number(webcam) }}
+        // style={{ display: Number(webcam) ? 'block' : 'none' }}
+      />
 
       <canvas ref={canvasRef} />
       <div className="menu-buttons">

@@ -209,7 +209,9 @@ canvas {
   &__control__btn {
     padding: 0 45px;
     height: 100%;
-    background-color: #00bc9b;
+    // background-color: #00bc9b;
+    background: transparent;
+    border: 2px solid #00bc9b;
     color: white;
     font-size: 31px;
     cursor: pointer;
@@ -217,7 +219,7 @@ canvas {
   }
 
   &__counter__output {
-    font-size: 16px;
+    font-size: 30px; // 16px;
     color: white; // black;
   }
 }

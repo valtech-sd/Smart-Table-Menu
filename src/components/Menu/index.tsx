@@ -43,17 +43,19 @@ export const Menu = ({ indexCoordinates, showMenu }: MenuProps) => {
       {MENU.map((section) => (
         <div key={section.name} className="menu__section">
           <div className="menu__item menu__title">{section.name}</div>
-          {section.items.map((item) => (
-            <MenuEntry
-              key={item.id}
-              item={item}
-              isSelected={
-                pressedElementId === "menu-item" &&
-                pressedElementProduct?.id === item.id
-              }
-              showQuantityMenu={showQuantityMenu === item.id}
-            />
-          ))}
+          <div className="menu-entries-container">
+            {section.items.map((item) => (
+              <MenuEntry
+                key={item.id}
+                item={item}
+                isSelected={
+                  pressedElementId === "menu-item" &&
+                  pressedElementProduct?.id === item.id
+                }
+                showQuantityMenu={showQuantityMenu === item.id}
+              />
+            ))}
+          </div>
         </div>
       ))}
     </div>

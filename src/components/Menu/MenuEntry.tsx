@@ -22,8 +22,8 @@ export default function MenuEntry({
   return (
     <div className="menu__item-wrapper">
       <div className="menu__item">
-        <p>{item.name}</p>
-        <p style={{ margin: 0 }}>${item.price}</p>
+        <h2>{item.name}</h2>
+        <p>${item.price}</p>
       </div>
       <div className={`menu__btn__container show`}>
         <button

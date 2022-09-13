@@ -83,6 +83,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         if (emoji === currentItem.current && !isEmpty) {
           setShowToast(true);
           emptyCart();
+          setShowMenu(false);
 
           onSelectedItemChanged(undefined);
         }
@@ -197,7 +198,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         muted
         imageSmoothing
         videoConstraints={{ ...videoConstraints, deviceId }}
-        style={{ opacity: Number(webcam) }}
+        style={{ opacity: Number(webcam), objectFit: "cover" }}
         // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />
 

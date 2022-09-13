@@ -20,11 +20,7 @@ export default function MenuEntry({
   );
 
   return (
-    <div
-      className={"menu__item-wrapper pressable"}
-      data-pressable-id="menu-item"
-      data-product={JSON.stringify(item)}
-    >
+    <div className="menu__item-wrapper">
       <div className="menu__item">
         <p>{item.name}</p>
         <p style={{ margin: 0 }}>${item.price}</p>

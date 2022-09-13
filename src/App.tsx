@@ -11,6 +11,10 @@ function App() {
         <Routes>
           <Route path="/" element={<MenuPage />} />
           <Route path="/webcam" element={<MenuPage webcam />} />
+          <Route
+            path="/webcam&showCameraSelector"
+            element={<MenuPage webcam showCameraSelector />}
+          />
         </Routes>
       </Router>
     </div>

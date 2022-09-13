@@ -20,9 +20,13 @@ const videoConstraints = {
 
 interface MenuPageProps {
   webcam?: boolean;
+  showCameraSelector?: boolean;
 }
 
-function MenuPage({ webcam = false }: MenuPageProps) {
+function MenuPage({
+  webcam = false,
+  showCameraSelector = false,
+}: MenuPageProps) {
   const { isEmpty, emptyCart } = useCart();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -30,7 +34,6 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
   const fingerHoverSelectionTime = 1500;
-
   //////////////////////////
   const [deviceId, setDeviceId] = useState("");
   const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
@@ -52,6 +55,16 @@ function MenuPage({ webcam = false }: MenuPageProps) {
       const filteredDevices = devices.filter(
         (device) => device.kind === "videoinput"
       );
+
+      const obsDevice = filteredDevices.find((mediaDevice) =>
+        mediaDevice.label.includes("OBS")
+      );
+
+      if (obsDevice) {
+        setDeviceId(obsDevice.deviceId);
+        setValue(obsDevice.label);
+      }
+
       setMediaDevices(filteredDevices);
     });
   }, []);
@@ -184,13 +197,15 @@ function MenuPage({ webcam = false }: MenuPageProps) {
 
   return (
     <div className="App">
-      <select value={value} onChange={handleChange} className="dropdown">
-        {mediaDevices?.map((device) => (
-          <option key={device.label} value={device.label}>
-            {device.label}
-          </option>
-        ))}
-      </select>
+      {showCameraSelector && (
+        <select value={value} onChange={handleChange} className="dropdown">
+          {mediaDevices?.map((device) => (
+            <option key={device.label} value={device.label}>
+              {device.label}
+            </option>
+          ))}
+        </select>
+      )}
       <div className={`toast toast--${toastClass}`}>Order in progress!</div>
       <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
       <Webcam

@@ -149,9 +149,8 @@ function MenuPage({
             if (canvasContext) {
               canvasContext.beginPath();
               canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = "red";
+              canvasContext.fillStyle = "#B8C5CB4D";
               canvasContext.fill();
-              canvasContext.stroke();
             }
 
             return setIndexCoordinates({ x, y });

@@ -38,6 +38,11 @@ function MenuPage({
   const [deviceId, setDeviceId] = useState("");
   const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
   const [value, setValue] = useState("");
+  let [x, y] = [0, 0];
+  let speed = 0.4;
+  let pointX = 0;
+  let pointY = 0;
+
 
   const handleChange = (event: any) => {
     if (mediaDevices) {
@@ -140,29 +145,21 @@ function MenuPage({
 
           const indexFinger = predictions[0].annotations.indexFinger;
           const lastFingerDot = indexFinger.at(-1);
+          const canvasContext = canvasRef.current.getContext("2d");
+
+          if (canvasContext) {
+            let distX = x - pointX;
+            let distY = y - pointY;
+            pointX = pointX + (distX * speed);
+            pointY = pointY + (distY * speed);  
+            canvasContext.beginPath();
+            canvasContext.arc(pointX, pointY, 10, 0, 2 * Math.PI);
+            canvasContext.fillStyle = "red";
+            canvasContext.fill();
+          }
 
           if (lastFingerDot) {
-            console.log("!");
-            const [x, y] = lastFingerDot;
-            let speed = 0.1;
-            let pointX = 0;
-            let pointY = 0;
-              let distX = x - pointX;
-              let distY = y - pointY;
-              pointX = pointX + (distX * speed);
-              pointY = pointY + (distY * speed);
-            
-            
-
-
-            const canvasContext = canvasRef.current.getContext("2d");
-
-            if (canvasContext) {
-              canvasContext.beginPath();
-              canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = "#B8C5CB4D";
-              canvasContext.fill();
-            }
+             [x, y] = lastFingerDot;
 
             return setIndexCoordinates({ x, y });
           }
@@ -224,7 +221,7 @@ function MenuPage({
         imageSmoothing
         videoConstraints={{ ...videoConstraints, deviceId }}
         style={{ opacity: Number(webcam), objectFit: "cover" }}
-        // style={{ display: Number(webcam) ? 'block' : 'none' }}
+      // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />
 
       <canvas ref={canvasRef} />

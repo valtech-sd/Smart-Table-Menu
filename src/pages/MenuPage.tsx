@@ -34,41 +34,10 @@ function MenuPage({
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
   const fingerHoverSelectionTime = 1500;
-  //////////////////////////
+
   const [deviceId, setDeviceId] = useState("");
   const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
   const [value, setValue] = useState("");
-
-  const handleChange = (event: any) => {
-    if (mediaDevices) {
-      const device = mediaDevices.find(
-        (mediaDevice) => mediaDevice.label === event.target.value
-      );
-      setValue(device?.label!);
-      setDeviceId(device?.deviceId!);
-      requestRef.current = requestAnimationFrame(app);
-    }
-  };
-
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      const filteredDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-
-      const obsDevice = filteredDevices.find((mediaDevice) =>
-        mediaDevice.label.includes("OBS")
-      );
-
-      if (obsDevice) {
-        setDeviceId(obsDevice.deviceId);
-        setValue(obsDevice.label);
-      }
-
-      setMediaDevices(filteredDevices);
-    });
-  }, []);
-  //////////////////////////
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -79,7 +48,44 @@ function MenuPage({
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
+
+  const handleChange = (event: any) => {
+    if (mediaDevices) {
+      const device = mediaDevices.find(
+        (mediaDevice) => mediaDevice.label === event.target.value
+      );
+      setValue(device?.label!);
+      setDeviceId(device?.deviceId!);
+    }
+  };
+
+  useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then((devices) => {
+      const filteredDevices = devices.filter(
+        (device) => device.kind === "videoinput"
+      );
+
+      setMediaDevices(filteredDevices);
+
+      const obsDevice = filteredDevices.find((mediaDevice) =>
+        mediaDevice.label.includes("OBS")
+      );
+
+      if (obsDevice) {
+        setValue(obsDevice.label);
+        setDeviceId(obsDevice.deviceId);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (deviceId) {
+      setIsLoading(false);
+    }
+  }, [deviceId]);
 
   const onSelectedItemChanged = useCallback((selectedItem?: string) => {
     currentItem.current = selectedItem;
@@ -130,7 +136,6 @@ function MenuPage({
           video,
           import.meta.env.VITE_FLIPPED_VIDEO as boolean
         );
-
         if (predictions.length && canvasRef.current) {
           canvasRef.current.width = video.videoWidth;
           canvasRef.current.height = video.videoHeight;
@@ -149,7 +154,7 @@ function MenuPage({
             if (canvasContext) {
               canvasContext.beginPath();
               canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = "#B8C5CB4D";
+              canvasContext.fillStyle = "#B8C5CB";
               canvasContext.fill();
             }
 
@@ -160,13 +165,7 @@ function MenuPage({
         setIndexCoordinates(undefined);
       }
     }
-  }, [
-    webcamRef.current,
-    canvasRef.current,
-    handposeModel,
-    isWebcamReady,
-    deviceId,
-  ]);
+  }, [webcamRef.current, canvasRef.current, handposeModel, isWebcamReady]);
 
   const app = useCallback(() => {
     detect();
@@ -194,6 +193,10 @@ function MenuPage({
     };
   }, [canvasRef.current]);
 
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <div className="App">
       {showCameraSelector && (
@@ -211,7 +214,10 @@ function MenuPage({
         ref={webcamRef}
         muted
         imageSmoothing
-        videoConstraints={{ ...videoConstraints, deviceId }}
+        videoConstraints={{
+          ...videoConstraints,
+          deviceId,
+        }}
         style={{ opacity: Number(webcam), objectFit: "cover" }}
         // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />

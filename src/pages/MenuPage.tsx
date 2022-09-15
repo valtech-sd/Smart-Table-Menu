@@ -39,10 +39,9 @@ function MenuPage({
   const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
   const [value, setValue] = useState("");
   let [x, y] = [0, 0];
-  let speed = 0.4;
-  let pointX = 0;
-  let pointY = 0;
-
+  let arrayX = [0];
+  let arrayY = [0];
+  let windowSize = 15;
 
   const handleChange = (event: any) => {
     if (mediaDevices) {
@@ -125,6 +124,25 @@ function MenuPage({
     }
   }, [showToast]);
 
+  useEffect(() => {
+    let square = 0;
+    let mean = 0.0, root = 0.0;
+
+
+  })
+
+  function calculateRMS(inputArray: number[]) {
+    let square = 0;
+    let mean = 0;
+    for (var i = 0; i < windowSize; i++) {
+      square += Math.pow(inputArray[i], 2);
+    }
+    // Calculate Mean.
+    mean = (square / (windowSize));
+    // Calculate Root.
+    return Math.sqrt(mean);
+
+  }
   const detect = useCallback(async () => {
     if (isWebcamReady(webcamRef.current)) {
       const { video } = webcamRef.current;
@@ -148,19 +166,30 @@ function MenuPage({
           const canvasContext = canvasRef.current.getContext("2d");
 
           if (canvasContext) {
-            let distX = x - pointX;
-            let distY = y - pointY;
-            pointX = pointX + (distX * speed);
-            pointY = pointY + (distY * speed);  
+            let rmsX = 0
+            let rmsY = 0;
+            if (arrayX.length == windowSize) {
+              rmsX = calculateRMS(arrayX);
+            }
+            if (arrayY.length == windowSize) {
+              rmsY = calculateRMS(arrayY);
+            }
             canvasContext.beginPath();
-            canvasContext.arc(pointX, pointY, 10, 0, 2 * Math.PI);
+            canvasContext.arc(rmsX, rmsY, 10, 0, 2 * Math.PI);
             canvasContext.fillStyle = "red";
             canvasContext.fill();
           }
 
           if (lastFingerDot) {
-             [x, y] = lastFingerDot;
-
+            [x, y] = lastFingerDot;
+            arrayX.push(x);
+            arrayY.push(y);
+            if (arrayX.length > windowSize) {
+              arrayX.shift();
+            }
+            if (arrayY.length > windowSize) {
+              arrayY.shift();
+            }
             return setIndexCoordinates({ x, y });
           }
         }

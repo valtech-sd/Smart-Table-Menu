@@ -142,7 +142,18 @@ function MenuPage({
           const lastFingerDot = indexFinger.at(-1);
 
           if (lastFingerDot) {
+            console.log("!");
             const [x, y] = lastFingerDot;
+            let speed = 0.1;
+            let pointX = 0;
+            let pointY = 0;
+              let distX = x - pointX;
+              let distY = y - pointY;
+              pointX = pointX + (distX * speed);
+              pointY = pointY + (distY * speed);
+            
+            
+
 
             const canvasContext = canvasRef.current.getContext("2d");
 

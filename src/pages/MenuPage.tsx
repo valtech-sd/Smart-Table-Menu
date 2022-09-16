@@ -25,7 +25,7 @@ interface MenuPageProps {
 
 function MenuPage({
   webcam = false,
-  showCameraSelector = false,
+  showCameraSelector = true,
 }: MenuPageProps) {
   const { isEmpty, emptyCart } = useCart();
   const webcamRef = useRef<Webcam>(null);

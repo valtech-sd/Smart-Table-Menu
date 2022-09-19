@@ -34,7 +34,7 @@ function CameraSelection() {
       <select value={value} onChange={handleChange} className="dropdown">
         {mediaDevices?.map((device) => (
           <option key={device.label} value={device.label}>
-            {device.label}
+            {device.label || "Default"}
           </option>
         ))}
       </select>

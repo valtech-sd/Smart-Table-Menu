@@ -12,6 +12,7 @@ import { IndexCoords } from "../types";
 
 import { Menu } from "../components/Menu";
 import { Cart } from "../components/Cart";
+import { useParams } from "react-router-dom";
 
 const videoConstraints = {
   width: window.innerWidth,
@@ -23,52 +24,15 @@ interface MenuPageProps {
   showCameraSelector?: boolean;
 }
 
-function MenuPage({
-  webcam = false,
-  showCameraSelector = false,
-}: MenuPageProps) {
+function MenuPage({ webcam = false }: MenuPageProps) {
   const { isEmpty, emptyCart } = useCart();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number>();
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
+  const { deviceId } = useParams();
   const fingerHoverSelectionTime = 1500;
-  //////////////////////////
-  const [deviceId, setDeviceId] = useState("");
-  const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
-  const [value, setValue] = useState("");
-
-  const handleChange = (event: any) => {
-    if (mediaDevices) {
-      const device = mediaDevices.find(
-        (mediaDevice) => mediaDevice.label === event.target.value
-      );
-      setValue(device?.label!);
-      setDeviceId(device?.deviceId!);
-      requestRef.current = requestAnimationFrame(app);
-    }
-  };
-
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      const filteredDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-
-      const obsDevice = filteredDevices.find((mediaDevice) =>
-        mediaDevice.label.includes("OBS")
-      );
-
-      if (obsDevice) {
-        setDeviceId(obsDevice.deviceId);
-        setValue(obsDevice.label);
-      }
-
-      setMediaDevices(filteredDevices);
-    });
-  }, []);
-  //////////////////////////
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -160,13 +124,7 @@ function MenuPage({
         setIndexCoordinates(undefined);
       }
     }
-  }, [
-    webcamRef.current,
-    canvasRef.current,
-    handposeModel,
-    isWebcamReady,
-    deviceId,
-  ]);
+  }, [webcamRef.current, canvasRef.current, handposeModel, isWebcamReady]);
 
   const app = useCallback(() => {
     detect();
@@ -196,15 +154,6 @@ function MenuPage({
 
   return (
     <div className="App">
-      {showCameraSelector && (
-        <select value={value} onChange={handleChange} className="dropdown">
-          {mediaDevices?.map((device) => (
-            <option key={device.label} value={device.label}>
-              {device.label}
-            </option>
-          ))}
-        </select>
-      )}
       <div className={`toast toast--${toastClass}`}>Order in progress!</div>
       <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
       <Webcam

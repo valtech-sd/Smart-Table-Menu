@@ -12,7 +12,6 @@ import { IndexCoords } from "../types";
 
 import { Menu } from "../components/Menu";
 import { Cart } from "../components/Cart";
-import { useParams } from "react-router-dom";
 
 const videoConstraints = {
   width: window.innerWidth,
@@ -31,7 +30,6 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const requestRef = useRef<number>();
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
-  const { deviceId } = useParams();
   const fingerHoverSelectionTime = 1500;
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
@@ -44,6 +42,12 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const [showMenu, setShowMenu] = useState(false);
 
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
+
+  const getHashQueryStringParam = (paramName: string) => {
+    const params = new URLSearchParams(window.location.hash.substr(1));
+
+    return params.get(paramName) || "";
+  };
 
   const onSelectedItemChanged = useCallback((selectedItem?: string) => {
     currentItem.current = selectedItem;
@@ -160,7 +164,10 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         ref={webcamRef}
         muted
         imageSmoothing
-        videoConstraints={{ ...videoConstraints, deviceId }}
+        videoConstraints={{
+          ...videoConstraints,
+          deviceId: getHashQueryStringParam("camera"),
+        }}
         style={{ opacity: Number(webcam), objectFit: "cover" }}
         // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />

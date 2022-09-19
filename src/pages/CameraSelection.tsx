@@ -38,7 +38,7 @@ function CameraSelection() {
           </option>
         ))}
       </select>
-      <Link className="link" to={`/webcam/${deviceId}`}>
+      <Link className="link" to={`/webcam#camera=${deviceId}`}>
         Webcam
       </Link>
       <Link className="link" to={`/nowebcam/${deviceId}`}>

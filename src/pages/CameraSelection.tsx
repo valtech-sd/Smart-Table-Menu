@@ -22,14 +22,8 @@ function CameraSelection() {
         (device) => device.kind === "videoinput"
       );
 
-      const obsDevice = filteredDevices.find((mediaDevice) =>
-        mediaDevice.label.includes("OBS")
-      );
-
-      if (obsDevice) {
-        setDeviceId(obsDevice.deviceId);
-        setValue(obsDevice.label);
-      }
+      setDeviceId(filteredDevices[0].deviceId);
+      setValue(filteredDevices[0].label);
 
       setMediaDevices(filteredDevices);
     });

@@ -48,6 +48,8 @@ function MenuPage({
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
 
   const handleChange = (event: any) => {
@@ -78,6 +80,12 @@ function MenuPage({
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (deviceId) {
+      setIsLoading(false);
+    }
+  }, [deviceId]);
 
   const onSelectedItemChanged = useCallback((selectedItem?: string) => {
     currentItem.current = selectedItem;
@@ -184,6 +192,10 @@ function MenuPage({
       }
     };
   }, [canvasRef.current]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <div className="App">

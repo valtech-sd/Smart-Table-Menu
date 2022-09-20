@@ -40,6 +40,9 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const [emoji, setEmoji] = useState(undefined);
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  let arrayX = [0];
+  let arrayY = [0];
+  let windowSize = 15;
 
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
 
@@ -53,6 +56,18 @@ function MenuPage({ webcam = false }: MenuPageProps) {
     currentItem.current = selectedItem;
     clearTimeout(timeoutId.current);
   }, []);
+
+  function calculateRMS(inputArray: number[]) {
+    let square = 0;
+    let mean = 0;
+    for (var i = 0; i < windowSize; i++) {
+      square += Math.pow(inputArray[i], 2);
+    }
+    // Calculate Mean.
+    mean = square / windowSize;
+    // Calculate Root.
+    return Math.sqrt(mean);
+  }
 
   useEffect(() => {
     if (currentItem.current !== emoji) {
@@ -115,12 +130,29 @@ function MenuPage({ webcam = false }: MenuPageProps) {
             const canvasContext = canvasRef.current.getContext("2d");
 
             if (canvasContext) {
+              let rmsX = 0;
+              let rmsY = 0;
+              if (arrayX.length == windowSize) {
+                rmsX = calculateRMS(arrayX);
+              }
+              if (arrayY.length == windowSize) {
+                rmsY = calculateRMS(arrayY);
+              }
+
               canvasContext.beginPath();
-              canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
+              canvasContext.arc(rmsX, rmsY, 10, 0, 2 * Math.PI);
               canvasContext.fillStyle = "#B8C5CB4D";
               canvasContext.fill();
             }
 
+            arrayX.push(x);
+            arrayY.push(y);
+            if (arrayX.length > windowSize) {
+              arrayX.shift();
+            }
+            if (arrayY.length > windowSize) {
+              arrayY.shift();
+            }
             return setIndexCoordinates({ x, y });
           }
         }

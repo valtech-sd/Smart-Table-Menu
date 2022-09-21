@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<CameraSelection />} />
           <Route path="/webcam" element={<MenuPage webcam />} />
-          <Route path="/nowebcam/:deviceId" element={<MenuPage />} />
+          <Route path="/nowebcam" element={<MenuPage />} />
         </Routes>
       </Router>
     </div>

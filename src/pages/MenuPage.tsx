@@ -20,6 +20,7 @@ const videoConstraints = {
 
 interface MenuPageProps {
   webcam?: boolean;
+  showCameraSelector?: boolean;
 }
 
 function MenuPage({ webcam = false }: MenuPageProps) {
@@ -29,33 +30,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const requestRef = useRef<number>();
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
-  const fingerHoverSelectionTime = 1500;
-
-  //////////////////////////
-  const [deviceId, setDeviceId] = useState("");
-  const [mediaDevices, setMediaDevices] = useState<MediaDeviceInfo[]>();
-  const [value, setValue] = useState("");
-
-  const handleChange = (event: any) => {
-    if (mediaDevices) {
-      const device = mediaDevices.find(
-        (mediaDevice) => mediaDevice.label === event.target.value
-      );
-      setValue(device?.label!);
-      setDeviceId(device?.deviceId!);
-      requestRef.current = requestAnimationFrame(app);
-    }
-  };
-
-  useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      const filteredDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      );
-      setMediaDevices(filteredDevices);
-    });
-  }, []);
-  //////////////////////////
+  const fingerHoverSelectionTime = 1000;
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
@@ -65,13 +40,34 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const [emoji, setEmoji] = useState(undefined);
   const [showToast, setShowToast] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  let arrayX = [0];
+  let arrayY = [0];
+  let windowSize = 15;
 
   const toastClass = useMemo(() => (showToast ? "show" : "hide"), [showToast]);
+
+  const getHashQueryStringParam = (paramName: string) => {
+    const params = new URLSearchParams(window.location.hash.substr(1));
+
+    return params.get(paramName) || "";
+  };
 
   const onSelectedItemChanged = useCallback((selectedItem?: string) => {
     currentItem.current = selectedItem;
     clearTimeout(timeoutId.current);
   }, []);
+
+  function calculateRMS(inputArray: number[]) {
+    let square = 0;
+    let mean = 0;
+    for (var i = 0; i < windowSize; i++) {
+      square += Math.pow(inputArray[i], 2);
+    }
+    // Calculate Mean.
+    mean = square / windowSize;
+    // Calculate Root.
+    return Math.sqrt(mean);
+  }
 
   useEffect(() => {
     if (currentItem.current !== emoji) {
@@ -83,6 +79,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         if (emoji === currentItem.current && !isEmpty) {
           setShowToast(true);
           emptyCart();
+          setShowMenu(false);
 
           onSelectedItemChanged(undefined);
         }
@@ -133,13 +130,29 @@ function MenuPage({ webcam = false }: MenuPageProps) {
             const canvasContext = canvasRef.current.getContext("2d");
 
             if (canvasContext) {
+              let rmsX = 0;
+              let rmsY = 0;
+              if (arrayX.length == windowSize) {
+                rmsX = calculateRMS(arrayX);
+              }
+              if (arrayY.length == windowSize) {
+                rmsY = calculateRMS(arrayY);
+              }
+
               canvasContext.beginPath();
-              canvasContext.arc(x, y, 10, 0, 2 * Math.PI);
-              canvasContext.fillStyle = "red";
+              canvasContext.arc(rmsX, rmsY, 10, 0, 2 * Math.PI);
+              canvasContext.fillStyle = "#B8C5CB4D";
               canvasContext.fill();
-              canvasContext.stroke();
             }
 
+            arrayX.push(x);
+            arrayY.push(y);
+            if (arrayX.length > windowSize) {
+              arrayX.shift();
+            }
+            if (arrayY.length > windowSize) {
+              arrayY.shift();
+            }
             return setIndexCoordinates({ x, y });
           }
         }
@@ -147,13 +160,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
         setIndexCoordinates(undefined);
       }
     }
-  }, [
-    webcamRef.current,
-    canvasRef.current,
-    handposeModel,
-    isWebcamReady,
-    deviceId,
-  ]);
+  }, [webcamRef.current, canvasRef.current, handposeModel, isWebcamReady]);
 
   const app = useCallback(() => {
     detect();
@@ -183,21 +190,17 @@ function MenuPage({ webcam = false }: MenuPageProps) {
 
   return (
     <div className="App">
-      <select value={value} onChange={handleChange} className="dropdown">
-        {mediaDevices?.map((device) => (
-          <option key={device.label} value={device.label}>
-            {device.label}
-          </option>
-        ))}
-      </select>
       <div className={`toast toast--${toastClass}`}>Order in progress!</div>
       <Menu indexCoordinates={indexCoordinates} showMenu={showMenu} />
       <Webcam
         ref={webcamRef}
         muted
         imageSmoothing
-        videoConstraints={{ ...videoConstraints, deviceId }}
-        style={{ opacity: Number(webcam) }}
+        videoConstraints={{
+          ...videoConstraints,
+          deviceId: getHashQueryStringParam("camera"),
+        }}
+        style={{ opacity: Number(webcam), objectFit: "cover" }}
         // style={{ display: Number(webcam) ? 'block' : 'none' }}
       />
 

@@ -7,21 +7,21 @@ const MENU: MenuSection[] = [
       {
         id: "1",
         name: "americano",
-        price: 9900,
+        price: 4.50,
         quantity: 0,
       },
       {
         id: "2",
         name: "espresso",
-        price: 16500,
+        price: 4.75,
         quantity: 0,
       },
-      {
-        id: "3",
-        name: "capuccino",
-        price: 4500,
-        quantity: 0,
-      },
+      // {
+      //   id: "3",
+      //   name: "capuccino",
+      //   price: 4500,
+      //   quantity: 0,
+      // },
     ],
   },
   {
@@ -30,21 +30,21 @@ const MENU: MenuSection[] = [
       {
         id: "4",
         name: "croissant",
-        price: 9900,
+        price: 3.85,
         quantity: 0,
       },
       {
         id: "5",
         name: "bagel",
-        price: 16500,
+        price: 2.25,
         quantity: 0,
       },
-      {
-        id: "6",
-        name: "brownie",
-        price: 4500,
-        quantity: 0,
-      },
+      // {
+      //   id: "6",
+      //   name: "brownie",
+      //   price: 4500,
+      //   quantity: 0,
+      // },
     ],
   },
 ];

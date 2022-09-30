@@ -20,18 +20,12 @@ export default function MenuEntry({
   );
 
   return (
-    <div
-      className={`menu__item-wrapper pressable ${
-        isSelected || showQuantityMenu ? "selected" : ""
-      }`}
-      data-pressable-id="menu-item"
-      data-product={JSON.stringify(item)}
-    >
+    <div className="menu__item-wrapper">
       <div className="menu__item">
-        <p>{item.name}</p>
+        <h2>{item.name}</h2>
         <p>${item.price}</p>
       </div>
-      <div className={`menu__btn__container ${showQuantityMenu ? "show" : ""}`}>
+      <div className={`menu__btn__container show`}>
         <button
           className="menu__control__btn pressable"
           data-pressable-id="remove-from-cart"

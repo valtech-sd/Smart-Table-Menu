@@ -21,7 +21,7 @@ export const Menu = ({ indexCoordinates, showMenu }: MenuProps) => {
 
   const { pressedElementId, pressedElementProduct } =
     useGetElementBeingPressed(indexCoordinates);
-  const isPressedAfter3Secs = useIsElementBeingPressed(3000, indexCoordinates);
+  const isPressedAfter3Secs = useIsElementBeingPressed(1000, indexCoordinates);
 
   useEffect(() => {
     if (isPressedAfter3Secs && pressedElementId && pressedElementProduct) {

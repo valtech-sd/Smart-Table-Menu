@@ -30,7 +30,7 @@ function MenuPage({ webcam = false }: MenuPageProps) {
   const requestRef = useRef<number>();
   const timeoutId = useRef<any>();
   const currentItem = useRef<string>();
-  const fingerHoverSelectionTime = 1500;
+  const fingerHoverSelectionTime = 1000;
 
   const [handposeModel, setHandposeModel] = useState<HandPose>();
   const [indexCoordinates, setIndexCoordinates] = useState<IndexCoords>();
